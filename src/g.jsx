@@ -5,7 +5,7 @@ import { SigmaContainer, useLoadGraph } from "@react-sigma/core";
 import dagre from "dagre";
 import "@react-sigma/core/lib/react-sigma.min.css";
 
-const sigmaStyle = { height: "800px", width: "1200px" };
+const sigmaStyle = { height: "700px", width: "1000px" };
 
 const d = { 
   nodes: [
