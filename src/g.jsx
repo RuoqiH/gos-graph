@@ -9,24 +9,35 @@ const sigmaStyle = { height: "700px", width: "1000px" };
 
 const d = { 
   nodes: [
+    {name: 'Start', barrier: true},
     {name: 'tecan_loaded', barrier: true},
     {name: 'vspin_1', barrier: false},
     {name: 'vspin_2', barrier: false},
     {name: 'after_run', barrier: true},
     {name: 'tecan_unload', barrier: true},
+    {name: 'End', barrier: true},
   ],
   edges: [
+    ['Start', 'tecan_loaded'],
     ['tecan_loaded', 'after_run'],
+    ['after_run', 'End'],
     ['tecan_loaded', 'vspin_1'],
     ['vspin_1', 'vspin_2'],
     ['vspin_2', 'tecan_unload'],
+    ['tecan_unload', 'End'],
   ]
 };
 
 const createGraph = (data) => {
   const graph = new Graph();
   data.nodes.forEach(e => {
-    const color = e.barrier? "#FA4F40": "#FABF40";
+    let color = e.barrier? "#FA4F40": "#FABF40";
+    if (e.name === 'Start') {
+      color = "#407bfa"
+    }
+    else if (e.name === 'End') {
+      color = "#0f266c"
+    }
     graph.addNode(e.name, {size: 15, label: e.name, color: color});
   })
   data.edges.forEach(e => graph.addEdge(e[0], e[1]))
