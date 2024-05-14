@@ -1,0 +1,140 @@
+# RTS specific variables
+
+# regions
+
+# devices
+
+choice HOTELS_CHOICE = [lock_1, lock_2]
+choice SS_NEST_DEST = [sf2-preamp-a-steristore-1_nest-1, sf2-preamp-a-steristore-1_nest-2]
+choice TRANSFER_SRC_NORM_1 = [sf2-preamp-a-transfer-1-1, sf2-preamp-a-transfer-1-2, sf2-preamp-a-transfer-1-3,sf2-preamp-a-transfer-1-4,sf2-preamp-a-transfer-1-5,sf2-preamp-a-transfer-1-6,sf2-preamp-a-transfer-1-7,sf2-preamp-a-transfer-1-8,sf2-preamp-a-transfer-1-9,sf2-preamp-a-transfer-1-10]
+choice TRANSFER_SRC_NORM_2 = [sf2-preamp-a-transfer-1-1, sf2-preamp-a-transfer-1-2, sf2-preamp-a-transfer-1-3,sf2-preamp-a-transfer-1-4,sf2-preamp-a-transfer-1-5,sf2-preamp-a-transfer-1-6,sf2-preamp-a-transfer-1-7,sf2-preamp-a-transfer-1-8,sf2-preamp-a-transfer-1-9,sf2-preamp-a-transfer-1-10]
+choice TRANSFER_NORM = [sf2-preamp-a-transfer-1-1, sf2-preamp-a-transfer-1-2, sf2-preamp-a-transfer-1-3,sf2-preamp-a-transfer-1-4,sf2-preamp-a-transfer-1-5,sf2-preamp-a-transfer-1-6,sf2-preamp-a-transfer-1-7,sf2-preamp-a-transfer-1-8,sf2-preamp-a-transfer-1-9,sf2-preamp-a-transfer-1-10]
+choice TRANSFER_GDNA = [sf2-preamp-a-transfer-1-1, sf2-preamp-a-transfer-1-2, sf2-preamp-a-transfer-1-3,sf2-preamp-a-transfer-1-4,sf2-preamp-a-transfer-1-5,sf2-preamp-a-transfer-1-6,sf2-preamp-a-transfer-1-7,sf2-preamp-a-transfer-1-8,sf2-preamp-a-transfer-1-9,sf2-preamp-a-transfer-1-10]
+
+proc acquire_hotels {
+  lock sf2-preamp-a-t2e_hotels_<%HOTELS_CHOICE%>
+  barrier hotels_acquired
+  barrier tecan_unloaded
+  barrier norm_unloaded
+  barrier gdna_unloaded
+  unlock sf2-preamp-a-t2e_hotels_<%HOTELS_CHOICE%>
+}
+
+proc run {
+  barrier tecan_loaded
+
+  lock sf2-preamp-a-t2e
+  run sf2-preamp-a-t2e dtsgdnaplatebuild !json{"gdna_loc":"[%location:gdna_plate_1%]","norm_loc_1":"[%location:norm_plate_1%]","norm_bc_1":"norm_plate_1","norm_bc_2":"norm_plate_2","gdna_worklist":{"worklist":{"transfers":[]},"gdna_plate_size":96,"barcodes":{}},"norm_loc_2":"[%location:norm_plate_2%]","pipeline_job_id":1,"gdna_bc":"gdna_plate_1"}
+  unlock sf2-preamp-a-t2e
+
+  barrier after_run
+}
+
+proc load_norm_1_vspin {
+  barrier norm_1_vspin_loading
+
+  lock sf2-preamp-a-mover-2
+  run sf2-preamp-a-mover-2 move_plate src=[%release_region_location_given_plate:norm_plate_1%] dest=<%TRANSFER_SRC_NORM_1%> barcode=norm_plate_1
+  unlock sf2-preamp-a-mover-2
+
+  lock <%TRANSFER_SRC_NORM_1%>
+
+  move <%TRANSFER_SRC_NORM_1%> sf2-preamp-a-vspin-1_nest barcode=norm_plate_1
+
+  unlock <%TRANSFER_SRC_NORM_1%>
+
+  run sf2-preamp-a-vspin-1 load_plate nest=1 plate_type=NORM_Pre_Matrix96_Plate barcode=norm_plate_1
+
+  barrier norm_1_vspin_loaded
+}
+
+proc load_norm_2_vspin {
+  barrier norm_2_vspin_loading
+
+  lock sf2-preamp-a-mover-2
+  run sf2-preamp-a-mover-2 move_plate src=[%release_region_location_given_plate:norm_plate_2%] dest=<%TRANSFER_SRC_NORM_2%> barcode=norm_plate_2
+  unlock sf2-preamp-a-mover-2
+
+  lock <%TRANSFER_SRC_NORM_2%>
+
+  move <%TRANSFER_SRC_NORM_2%> sf2-preamp-a-vspin-1_nest barcode=norm_plate_2
+
+  unlock <%TRANSFER_SRC_NORM_2%>
+
+  run sf2-preamp-a-vspin-1 load_plate nest=2 plate_type=NORM_Pre_Matrix96_Plate barcode=norm_plate_2
+
+  barrier norm_2_vspin_loaded
+}
+
+proc norm_load {
+  barrier hotels_acquired
+  lock sf2-preamp-a-vspin-1
+  barrier norm_1_vspin_loading
+  barrier norm_2_vspin_loading
+  barrier norm_1_vspin_loaded
+  barrier norm_2_vspin_loaded
+
+  run sf2-preamp-a-vspin-1 spin_cycle !json{"accel_percent":100,"decel_percent":100,"bucket_num":1,"duration":15,"rpm":1500,"barcodes":["norm_plate_1","norm_plate_2"]}
+
+  run sf2-preamp-a-vspin-1 unload_plate nest=1 plate_type=NORM_Pre_Matrix96_Plate barcode=norm_plate_1
+  lock <%TRANSFER_NORM%>
+  move sf2-preamp-a-vspin-1_nest <%TRANSFER_NORM%> barcode=norm_plate_1
+  move <%TRANSFER_NORM%> [%lock_region_location_for_plate:SF2-PREAMP-A-T2E%] barcode=norm_plate_1
+  unlock <%TRANSFER_NORM%>
+
+  run sf2-preamp-a-vspin-1 unload_plate nest=2 plate_type=NORM_Pre_Matrix96_Plate barcode=norm_plate_2
+  lock <%TRANSFER_NORM%>
+  move sf2-preamp-a-vspin-1_nest <%TRANSFER_NORM%> barcode=norm_plate_2
+  move <%TRANSFER_NORM%> [%lock_region_location_for_plate:SF2-PREAMP-A-T2E%] barcode=norm_plate_2
+  unlock <%TRANSFER_NORM%>
+
+  unlock sf2-preamp-a-vspin-1
+  barrier tecan_loaded
+
+  barrier after_run
+  move [%location: norm_plate_1%] [%lock_region_location_for_plate:SF2-PREAMP-A-RTS%] barcode=norm_plate_1 labware_type=NORM_RACK
+  move [%location: norm_plate_2%] [%lock_region_location_for_plate:SF2-PREAMP-A-RTS%] barcode=norm_plate_2 labware_type=NORM_RACK
+  barrier norm_unloaded
+}
+
+proc gdna_load {
+  barrier hotels_acquired
+
+  lock sf2-preamp-a-labeling-1
+  lock sf2-preamp-a-microserve-1
+  run sf2-preamp-a-microserve-1 unload_labware labware_type_name=TECAN_EXTRACTION
+
+  move sf2-preamp-a-microserve-1_nest sf2-preamp-a-labeling-1_nest
+  unlock sf2-preamp-a-microserve-1
+
+  run sf2-preamp-a-labeling-1 print_and_apply_barcode barcode=gdna_plate_1
+
+  lock <%TRANSFER_GDNA%>
+  move sf2-preamp-a-labeling-1_nest <%TRANSFER_GDNA%> barcode=norm_plate_2
+  unlock sf2-preamp-a-labeling-1
+  move <%TRANSFER_GDNA%> [%lock_region_location_for_plate:SF2-PREAMP-A-T2E%] barcode=gdna_plate_1
+  unlock <%TRANSFER_GDNA%>
+
+  barrier tecan_loaded
+  barrier after_run
+
+  lock sf2-preamp-a-plateloc-1
+
+  # Move gdna plate to steristore
+
+  move [%release_region_location_given_plate:gdna_plate_1%] sf2-preamp-a-plateloc-1_nest barcode=gdna_plate_1
+
+  barrier gdna_unloaded
+
+  run sf2-preamp-a-plateloc-1 seal_plate barcode=gdna_plate_1
+
+  lock <%SS_NEST_DEST%>
+  move sf2-preamp-a-plateloc-1_nest <%SS_NEST_DEST%> barcode=gdna_plate_1
+  unlock sf2-preamp-a-plateloc-1
+
+  lock sf2-preamp-a-steristore-1
+  run sf2-preamp-a-steristore-1 place barcode=gdna_plate_1 from_nest=<%SS_NEST_DEST%> stacker_type=STORAGE
+  unlock sf2-preamp-a-steristore-1
+
+  unlock <%SS_NEST_DEST%>
+}
