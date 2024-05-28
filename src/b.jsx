@@ -22,14 +22,15 @@ ChartJS.register(
 const options = {
   indexAxis: 'y',
   borderSkipped: false,
-  scales: { x: {
+  scales: {
+    x: {
       min: 0,
       max: 100,
     }
   },
 }
 
-const labels = [1,2,3,4,5];
+const labels = [1, 2, 3, 4, 5];
 const data = {
   labels: labels,
   datasets: [{
@@ -58,7 +59,7 @@ const data = {
 };
 
 
-export const Timeline = () =>{
+export const Timeline = () => {
   return (
     <Bar
       options={options}
