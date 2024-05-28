@@ -267,12 +267,13 @@ const parseGOS = (content) => {
         }
       }
       else if (is_run || is_move) {
-        if (is_move) { name = "move" }
-        else { name = name2type.get(name) || name}
-        const count = node_map[name] || 0;
-        node_map[name] = count + 1;
-        name = `${name}_${count}`;
-        result.nodes.push({name: name, barrier: false});
+        let type;
+        if (is_move) { type = "mover" }
+        else { type = name2type.get(name) || name}
+        const count = node_map[type] || 0;
+        node_map[type] = count + 1;
+        name = `${type}_${count}`;
+        result.nodes.push({name: name, type: type, barrier: false});
       }
       if (is_barrier || is_run || is_move) {
         if ((current_type !== 'barrier' || !is_barrier) && !(edge_map[current]?.has(name))) {
@@ -310,7 +311,7 @@ const createGraph = (data) => {
     else if (e.name === 'End') {
       color = "#0f266c"
     }
-    graph.addNode(e.name, {size: 15, label: e.name, color: color});
+    graph.addNode(e.name, {size: 15, label: e.type || e.name, color: color});
   })
   data.edges.forEach(e => graph.addEdge(e[0], e[1]))
 
