@@ -18,19 +18,19 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div style={{display: 'flex', flexDirection: 'row'}}>
-          <FileInputComponent onFileInput={(data) => setData(data)}/>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <FileInputComponent onFileInput={(data) => setData(data)} />
           <select id="choices" onChange={(e) => setTab(e.target.value)}>
             <option value="graph">Graph</option>
             <option value="timeline">Timeline</option>
           </select>
         </div>
         {
-          tab==='graph'?
-          <DisplayGraph data={data} />
-          :tab==='timeline'?
-          <Timeline locks={locks} />
-          :null
+          tab === 'graph' ?
+            <DisplayGraph data={data} />
+            : tab === 'timeline' ?
+              <Timeline locks={locks} />
+              : null
         }
       </header>
     </div>

@@ -60,7 +60,7 @@ const options = {
 provide {
   [lock name]: [[start: int, end: int], ...]
 }
-*/ 
+*/
 // {
 //   label: '',
 //   data: [{x:[20, 65], y: "device 1"}],
@@ -69,13 +69,13 @@ provide {
 //   borderWidth: 1
 // }
 
-export const Timeline = ({locks}) => {
+export const Timeline = ({ locks }) => {
   const lock_names = Object.keys(locks);
   const datasets = [];
   for (let i = 0; i < lock_names.length; i++) {
     const data = []
     for (let j = 0; j < locks[lock_names[i]].length; j++) {
-      data.push({x:locks[lock_names[i]][j] , y: lock_names[i]})
+      data.push({ x: locks[lock_names[i]][j], y: lock_names[i] })
     }
     datasets.push({
       label: lock_names[i],
@@ -86,7 +86,7 @@ export const Timeline = ({locks}) => {
     })
   }
   return (
-    <div style={{width: '1000px', height: '600px'}}>
+    <div style={{ width: '1000px', height: '600px' }}>
       <Bar
         options={options}
         data={{ datasets: datasets }}

@@ -50,7 +50,7 @@ const GraphEvents = () => {
 
   return null;
 };
-const sigmaStyle = { height: "600px", width: "1000px", backgroundColor: '#837c7c'};
+const sigmaStyle = { height: "600px", width: "1000px", backgroundColor: '#837c7c' };
 
 const d =
   [
@@ -314,10 +314,10 @@ const createGraph = (data) => {
     else if (e.name === 'End') {
       color = "#0f266c"
     }
-    graph.addNode(e.name, { 
-        size: 15,
-        label: e.type || e.name,
-        color: color,
+    graph.addNode(e.name, {
+      size: 15,
+      label: e.type || e.name,
+      color: color,
     });
   })
   data.edges.forEach(e => graph.addEdge(e[0], e[1]))
@@ -359,7 +359,7 @@ const UseGraph = ({ content }) => {
   return null;
 };
 
-export const DisplayGraph = ({data}) => {
+export const DisplayGraph = ({ data }) => {
   return (
     <SigmaContainer style={sigmaStyle}>
       <GraphEvents />
