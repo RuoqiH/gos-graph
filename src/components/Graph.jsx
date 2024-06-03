@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Graph from "graphology";
 import {
   SigmaContainer,
@@ -50,7 +50,7 @@ const GraphEvents = () => {
 
   return null;
 };
-const sigmaStyle = { height: "700px", width: "1000px" };
+const sigmaStyle = { height: "600px", width: "1000px", backgroundColor: '#837c7c'};
 
 const d =
   [
@@ -314,7 +314,11 @@ const createGraph = (data) => {
     else if (e.name === 'End') {
       color = "#0f266c"
     }
-    graph.addNode(e.name, { size: 15, label: e.type || e.name, color: color });
+    graph.addNode(e.name, { 
+        size: 15,
+        label: e.type || e.name,
+        color: color,
+    });
   })
   data.edges.forEach(e => graph.addEdge(e[0], e[1]))
 
@@ -345,30 +349,21 @@ const createGraph = (data) => {
   return graph;
 }
 
-const FileInputComponent = ({ fileInputRef, handleFileInput }) => {
+const UseGraph = ({ content }) => {
   const loadGraph = useLoadGraph(); // Ensuring useLoadGraph is within SigmaContainer
-  const readFile = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target.result;
-      const data = parseGOS(content);
-      loadGraph(createGraph(data));
-    };
-    reader.readAsText(file);
-  }
-  return (
-    <input type="file" onChange={(e) => readFile(e)} ref={fileInputRef} />
-  );
+  React.useEffect(() => {
+    if (!content) return;
+    const data = parseGOS(content);
+    loadGraph(createGraph(data));
+  }, [content])
+  return null;
 };
 
-export const DisplayGraph = () => {
-  const fileInputRef = useRef(null);
+export const DisplayGraph = ({data}) => {
   return (
     <SigmaContainer style={sigmaStyle}>
       <GraphEvents />
-      <FileInputComponent fileInputRef={fileInputRef} />
+      <UseGraph content={data} />
     </SigmaContainer>
   );
 };
