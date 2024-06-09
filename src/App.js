@@ -5,10 +5,11 @@ import { Timeline } from './components/Timeline';
 import { FileInputComponent } from './components/FileInput';
 
 
-const locks = {
-  "device 1": [[1, 100], [150, 200]],
-  "device 2": [[1, 50], [150, 250]],
-  "device 3": [[50, 60], [100, 140]],
+const timeline = {
+  "device 1": { locks: [[1, 100], [150, 200]], type: 'device' },
+  "device 2": { locks: [[1, 50], [150, 250]], type: 'device' },
+  "device 3": { locks: [[120, 140], [60, 100]], type: 'device' },
+  "location 3": { locks: [[50, 60], [100, 140]], type: 'location' },
 }
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
           tab === 'graph' ?
             <DisplayGraph data={data} />
             : tab === 'timeline' ?
-              <Timeline locks={locks} />
+              <Timeline timeline={timeline} />
               : null
         }
       </header>

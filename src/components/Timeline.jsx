@@ -69,27 +69,75 @@ provide {
 //   borderWidth: 1
 // }
 
-export const Timeline = ({ locks }) => {
-  const lock_names = Object.keys(locks);
+function overlap(a1, a2, b1, b2) {
+  return Math.max(a1, b1) < Math.min(a2, b2);
+}
+function get_track_number(track, start, end) {
+  for (let i = 0; i < track.length; i++) {
+    let collide = false;
+    for (let j = 0; j < track[i].length; j++) {
+      const interval = track[i][j].interval;
+      if (overlap(start, end, interval[0], interval[1])) {
+        collide = true;
+        break;
+      }
+    }
+    if (!collide) {
+      track[i].push({ interval: [start, end] });
+      return i;
+    }
+  }
+  track.push([{ interval: [start, end] }])
+  return track.length - 1;
+}
+
+function construct_data(timeline) {
+  const lock_names = Object.keys(timeline);
+  const tracks = { device: [], location: [] }
+  const lock_to_track_number = {};
+  for (let i = 0; i < lock_names.length; i++) {
+    const intervals = timeline[lock_names[i]];
+    const track = tracks[intervals.type];
+    lock_to_track_number[lock_names[i]] = [];
+    if (!track) throw Error("???");
+    for (let j = 0; j < intervals.locks.length; j++) {
+      const track_number = get_track_number(
+        track,
+        intervals.locks[j][0],
+        intervals.locks[j][1],
+      )
+      lock_to_track_number[lock_names[i]].push(track_number);
+    }
+  }
   const datasets = [];
   for (let i = 0; i < lock_names.length; i++) {
+    const intervals = timeline[lock_names[i]];
     const data = []
-    for (let j = 0; j < locks[lock_names[i]].length; j++) {
-      data.push({ x: locks[lock_names[i]][j], y: lock_names[i] })
+    for (let j = 0; j < intervals.locks.length; j++) {
+      const track_number = lock_to_track_number[lock_names[i]][j];
+      data.push({
+        x: intervals.locks[j],
+        y: `${intervals.type}_${track_number}`,
+      })
     }
     datasets.push({
       label: lock_names[i],
       data: data,
-      backgroundColor: fill_colors,
-      borderColor: border_colors,
-      borderWidth: 1
+      backgroundColor: fill_colors[i],
+      borderColor: border_colors[i],
+      borderWidth: 1,
     })
   }
+  return datasets;
+}
+
+
+export const Timeline = ({ timeline }) => {
   return (
     <div style={{ width: '1000px', height: '600px' }}>
       <Bar
         options={options}
-        data={{ datasets: datasets }}
+        data={{ datasets: construct_data(timeline) }}
       />
     </div>
   )
