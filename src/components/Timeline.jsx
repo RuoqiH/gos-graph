@@ -50,6 +50,9 @@ const options = {
     x: {
       min: 0,
       max: 300,
+    },
+    y: {
+      stacked: true,
     }
   },
 }
@@ -117,7 +120,7 @@ function construct_data(timeline) {
       const track_number = lock_to_track_number[lock_names[i]][j];
       data.push({
         x: intervals.locks[j],
-        y: `${intervals.type}_${track_number}`,
+        y: `${intervals.type}_track_${track_number}`,
       })
     }
     datasets.push({
