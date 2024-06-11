@@ -9,6 +9,7 @@ import {
   // Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
+import { parse_gos_to_timeline } from './utils';
 
 ChartJS.register(
   CategoryScale,
@@ -94,7 +95,8 @@ function get_track_number(track, start, end) {
   return track.length - 1;
 }
 
-function construct_data(timeline) {
+function construct_data(content) {
+  const timeline = parse_gos_to_timeline(content);
   const lock_names = Object.keys(timeline);
   const tracks = { device: [], location: [] }
   const lock_to_track_number = {};
@@ -134,13 +136,12 @@ function construct_data(timeline) {
   return datasets;
 }
 
-
-export const Timeline = ({ timeline }) => {
+export const Timeline = ({ content }) => {
   return (
     <div style={{ width: '1000px', height: '600px' }}>
       <Bar
         options={options}
-        data={{ datasets: construct_data(timeline) }}
+        data={{ datasets: construct_data(content) }}
       />
     </div>
   )
