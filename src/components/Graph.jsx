@@ -58,7 +58,7 @@ const createGraph = (data) => {
   data.nodes.forEach(e => {
     let color = e.barrier ? "#FA4F40" : "#FABF40";
     if (e.name === 'Start') {
-      color = "#407bfa"
+      color = "#1c62fb"
     }
     else if (e.name === 'End') {
       color = "#0f266c"
