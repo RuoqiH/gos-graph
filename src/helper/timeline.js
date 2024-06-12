@@ -12,9 +12,6 @@ export class TimelineContainer {
     let s = start;
     for (let i = 0; i < this.timeline.length; i++) {
       const [t_start, t_end, t_name] = this.timeline[i];
-      if (t_name === name) {
-        console.log(t_start, s, t_end);
-      }
       if (s <= t_end && s >= t_start && t_name === name) {
         s = t_end;
       }

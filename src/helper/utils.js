@@ -219,9 +219,6 @@ export const parse_gos_to_timeline = (content) => {
     else if (node.value.type === 'unlock') {
       const lock_name = node.value.display;
       const lock_start = lock_map.get(lock_name);
-      if (lock_start === undefined) {
-        console.log(lock_name)
-      }
       timeline.add_interval(lock_name, lock_start, finish_time);
     }
     finish_time_map.set(node_name, finish_time + 1); // +1 for each step

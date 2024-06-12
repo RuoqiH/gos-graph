@@ -9,7 +9,6 @@ import { Timeline } from './components/Timeline';
 function App() {
   const [tab, setTab] = useState('simple graph');
   const [data, setData] = useState(null);
-  console.log(tab);
   return (
     <div className="App">
       <header className="App-header">
