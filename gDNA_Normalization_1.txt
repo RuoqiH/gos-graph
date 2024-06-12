@@ -9,7 +9,7 @@ proc run {
   barrier tecan_loaded
   lock sf2-preamp-a-t2e
 
-  run sf2-preamp-a-t2e tecan_norm_v2 !json{"norm_worklist":{"transfers":[]},"extr_bc":"EXTR_00001","norm_bc":"NORM_00001","pipeline_job_id":1,"norm_loc":"[%location:NORM_00001%]","extr_loc":"[%location:EXTR_00001%]"}
+  run sf2-preamp-a-t2e normalization !json{"norm_worklist":{"transfers":[]},"extr_bc":"EXTR_00001","norm_bc":"NORM_00001","pipeline_job_id":1,"norm_loc":"[%location:NORM_00001%]","extr_loc":"[%location:EXTR_00001%]"}
   unlock sf2-preamp-a-t2e
 
   barrier after_run

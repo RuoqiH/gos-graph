@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Graph from "graphology";
 import {
   SigmaContainer,
@@ -8,7 +8,7 @@ import {
 } from "@react-sigma/core";
 import dagre from "dagre";
 import "@react-sigma/core/lib/react-sigma.min.css";
-import { parse_gos_to_graph } from './utils'
+import { parse_gos_to_simple_graph } from '../helper/utils'
 
 const GraphEvents = () => {
   const registerEvents = useRegisterEvents();
@@ -102,13 +102,13 @@ const UseGraph = ({ content }) => {
   const loadGraph = useLoadGraph(); // Ensuring useLoadGraph is within SigmaContainer
   React.useEffect(() => {
     if (!content) return;
-    const data = parse_gos_to_graph(content);
+    const data = parse_gos_to_simple_graph(content);
     loadGraph(createGraph(data));
   }, [content])
   return null;
 };
 
-export const DisplayGraph = ({ content }) => {
+export const DisplaySimpleGraph = ({ content }) => {
   return (
     <SigmaContainer style={sigmaStyle}>
       <GraphEvents />

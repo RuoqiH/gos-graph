@@ -9,7 +9,7 @@ import {
   // Legend,
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
-import { parse_gos_to_timeline } from './utils';
+import { parse_gos_to_timeline } from '../helper/utils';
 
 ChartJS.register(
   CategoryScale,
@@ -30,6 +30,15 @@ const fill_colors = [
   'rgba(201, 203, 207, 0.2)',
   'rgba(136, 185, 37, 0.2)',
   'rgba(80, 180, 90, 0.2)',
+  'rgba(249, 43, 88, 0.2)',
+  'rgba(249, 140, 31, 0.2)',
+  'rgba(249, 191, 55, 0.2)',
+  'rgba(37, 193, 193, 0.2)',
+  'rgba(29, 152, 234, 0.2)',
+  'rgba(113, 46, 247, 0.2)',
+  'rgba(96, 97, 100, 0.2)',
+  'rgba(89, 128, 11, 0.2)',
+  'rgba(30, 173, 44, 0.2)',
 ]
 
 const border_colors = [
@@ -42,6 +51,15 @@ const border_colors = [
   'rgb(201, 203, 207)',
   'rgb(136, 185, 37)',
   'rgb(80, 180, 90)',
+  'rgb(249, 43, 88)',
+  'rgb(249, 140, 31)',
+  'rgb(249, 191, 55)',
+  'rgb(37, 193, 193)',
+  'rgb(29, 152, 234)',
+  'rgb(113, 46, 247)',
+  'rgb(96, 97, 100)',
+  'rgb(89, 128, 11)',
+  'rgb(30, 173, 44)',
 ]
 
 const options = {
@@ -50,7 +68,7 @@ const options = {
   scales: {
     x: {
       min: 0,
-      max: 300,
+      max: 1500,
     },
     y: {
       stacked: true,

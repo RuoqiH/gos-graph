@@ -240,6 +240,7 @@ export const device_type = {
         "estimator": {
             "estimate": [
                 ["normv2", 1010],
+                ["normalization", 1010],
                 ["gdnabuildv2", 895],
                 ["barcodescandevicediagnostic", 30],
                 ["dtsgdnaplatebuild", 1500],
