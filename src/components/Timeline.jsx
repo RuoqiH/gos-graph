@@ -31,8 +31,8 @@ const fill_colors = [
   'rgba(136, 185, 37, 0.2)',
   'rgba(80, 180, 90, 0.2)',
   'rgba(249, 43, 88, 0.2)',
-  'rgba(249, 140, 31, 0.2)',
-  'rgba(249, 191, 55, 0.2)',
+  'rgba(166, 93, 21, 0.2)',
+  'rgba(180, 137, 38, 0.2)',
   'rgba(37, 193, 193, 0.2)',
   'rgba(29, 152, 234, 0.2)',
   'rgba(113, 46, 247, 0.2)',
@@ -52,8 +52,8 @@ const border_colors = [
   'rgb(136, 185, 37)',
   'rgb(80, 180, 90)',
   'rgb(249, 43, 88)',
-  'rgb(249, 140, 31)',
-  'rgb(249, 191, 55)',
+  'rgb(166, 93, 21)',
+  'rgb(180, 137, 38)',
   'rgb(37, 193, 193)',
   'rgb(29, 152, 234)',
   'rgb(113, 46, 247)',
@@ -105,6 +105,7 @@ function construct_data(content) {
   const lock_names = Object.keys(timeline);
   const tracks = { device: [], location: [] }
   const lock_to_track_number = {};
+  let max = 0;
   for (let i = 0; i < lock_names.length; i++) {
     const intervals = timeline[lock_names[i]];
     const track = tracks[intervals.type];
@@ -116,6 +117,7 @@ function construct_data(content) {
         intervals.locks[j][0],
         intervals.locks[j][1],
       )
+      max = Math.max(intervals.locks[j][1], max);
       lock_to_track_number[lock_names[i]].push(track_number);
     }
   }
@@ -145,24 +147,24 @@ function construct_data(content) {
       labels.push(`${track_names[i]}_track_${j}`);
     }
   }
-  return { labels, datasets };
+  return { max, labels, datasets };
 }
 
 export const Timeline = ({ content }) => {
+  const { max, labels, datasets } = construct_data(content);
   const options = {
     indexAxis: 'y',
     borderSkipped: false,
     scales: {
       x: {
         min: 0,
-        max: 1750,
+        max: max,
       },
       y: {
         stacked: true,
       }
     },
   }
-  const { labels, datasets } = construct_data(content);
   return (
     <div style={{ width: '1000px', height: '600px' }}>
       <Bar

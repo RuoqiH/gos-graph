@@ -95,7 +95,6 @@ export const parse_gos_to_full_graph = (content) => {
   for (let i = 0; i < procs.length; i++) {
     const lines = procs[i].split(/\r?\n/);
     let current = 'Start';
-    let current_type = 'barrier';
     for (let j = 0; j < lines.length; j++) {
       const line = lines[j].trimStart();
       const is_barrier = line.indexOf('barrier') === 0;
@@ -150,7 +149,6 @@ export const parse_gos_to_full_graph = (content) => {
           }
         }
         current = name;
-        current_type = is_barrier ? 'barrier' : 'other';
       }
     }
     const name = 'End';
@@ -166,6 +164,7 @@ export const parse_gos_to_full_graph = (content) => {
   return result;
 }
 
+const STEP_MIN_TIME = 1;
 function get_estimate(device, method) {
   const info = device_type[name2type.get(device)];
   if (!info) throw Error(device + ' not found');
@@ -175,12 +174,14 @@ function get_estimate(device, method) {
   }
   const method_estimate = estimate.filter(v => v[0] === method);
   // if (!method_estimate) throw Error(method + ' not found on ' + device);
-  if (!method_estimate) return 1;
+  if (!method_estimate) return STEP_MIN_TIME;
   return method_estimate[0][1];
 }
 
+
 // TODO: precompile lock time per region for resolving collision
 export const parse_gos_to_timeline = (content) => {
+  console.log(get_estimate("sf2-preamp-a-mover-2", "move_plate"));
   if (!content) return {};
   const graph = new Graph(parse_gos_to_full_graph(content));
   const stack = []; // use stack to enforce always going through a proc if possible
@@ -212,9 +213,47 @@ export const parse_gos_to_timeline = (content) => {
       const method = node.value.args[2];
       finish_time += get_estimate(device, method);
     }
+    if (node.value.type === 'move') {
+      finish_time += 19;
+    }
     else if (node.value.type === 'lock') {
       const lock_name = node.value.display;
-      const lock_start = timeline.find_time_from(finish_time, lock_name);
+      let curr = node;
+      let has_barrier = false;
+      let duration = 0;
+      let found = false;
+      while (true) {
+        curr = curr.next[0];
+        if (curr.value.type === 'barrier') {
+          has_barrier = true;
+          break;
+        }
+        else if (curr.value.type === 'move') {
+          duration += 19;
+        }
+        else if (curr.value.type === 'run') {
+          const device = curr.value.args[1];
+          const method = curr.value.args[2];
+          duration += get_estimate(device, method);
+        }
+        else if (curr.value.type === 'unlock' && curr.value.display === lock_name) {
+          found = true;
+          break;
+        }
+        else {
+          duration += STEP_MIN_TIME;
+        }
+      }
+      if (has_barrier) {
+        duration = null; // TODO: resolved lock duration with barriers
+      }
+      else if (found) {
+      }
+      else {
+        throw Error("no unlock found for: " + lock_name)
+      }
+      const lock_start = timeline.find_time_from(finish_time, duration, lock_name);
+      finish_time = lock_start;
       lock_map.set(lock_name, lock_start);
     }
     else if (node.value.type === 'unlock') {
@@ -222,10 +261,11 @@ export const parse_gos_to_timeline = (content) => {
       const lock_start = lock_map.get(lock_name);
       timeline.add_interval(lock_name, lock_start, finish_time);
     }
-    finish_time_map.set(node_name, finish_time + 1); // +1 for each step
+    finish_time_map.set(node_name, finish_time + STEP_MIN_TIME); // +STEP_MIN_TIME for each step
   }
   const result = {};
 
+  timeline.validate()
   const intervals = timeline.get_intervals();
 
   for (let i = 0; i < intervals.length; i++) {
@@ -237,6 +277,5 @@ export const parse_gos_to_timeline = (content) => {
     }
     result[name].locks.push([interval.start, interval.end]);
   }
-
   return result;
 }
