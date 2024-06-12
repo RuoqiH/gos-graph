@@ -179,6 +179,7 @@ function get_estimate(device, method) {
   return method_estimate[0][1];
 }
 
+// TODO: precompile lock time per region for resolving collision
 export const parse_gos_to_timeline = (content) => {
   const graph = new Graph(parse_gos_to_full_graph(content));
   const stack = []; // use stack to enforce always going through a proc if possible
