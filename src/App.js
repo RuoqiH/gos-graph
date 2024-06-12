@@ -10,14 +10,14 @@ function App() {
   const [tab, setTab] = useState('simple graph');
   const [data, setData] = useState(null);
   return (
-    <div className="App">
-      <header className="App-header">
+    <div className='App'>
+      <header className='App-header'>
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <FileInputComponent onFileInput={(data) => setData(data)} />
-          <select id="choices" onChange={(e) => setTab(e.target.value)}>
-            <option value="simple graph">Simple Graph</option>
-            <option value="full graph">Full Graph</option>
-            <option value="timeline">Timeline</option>
+          <select id='choices' onChange={(e) => setTab(e.target.value)}>
+            <option value='simple graph'>Simple Graph</option>
+            <option value='full graph'>Full Graph</option>
+            <option value='timeline'>Timeline</option>
           </select>
         </div>
         {

@@ -1,6 +1,6 @@
-import { device_type, devices } from "./constants";
-import { Graph } from "./graph";
-import { TimelineContainer } from "./timeline"
+import { device_type, devices } from './constants';
+import { Graph } from './graph';
+import { TimelineContainer } from './timeline'
 
 const name2type = new Map(devices.map(item => [item.name, item.type]));
 
@@ -24,13 +24,13 @@ export const parse_gos_to_simple_graph = (content) => {
   }
   for (let i = 0; i < procs.length; i++) {
     const lines = procs[i].split(/\r?\n/);
-    let current = "Start";
-    let current_type = "barrier";
+    let current = 'Start';
+    let current_type = 'barrier';
     for (let j = 0; j < lines.length; j++) {
       const line = lines[j].trimStart();
-      const is_barrier = line.indexOf("barrier") === 0;
-      const is_run = line.indexOf("run") === 0;
-      const is_move = line.indexOf("move") === 0;
+      const is_barrier = line.indexOf('barrier') === 0;
+      const is_run = line.indexOf('run') === 0;
+      const is_move = line.indexOf('move') === 0;
       const args = line.split(' ');
       let name = args[1];
       if (is_barrier) {
@@ -41,7 +41,7 @@ export const parse_gos_to_simple_graph = (content) => {
       }
       else if (is_run || is_move) {
         let type;
-        if (is_move) { type = "mover" }
+        if (is_move) { type = 'mover' }
         else { type = name2type.get(name) || name }
         const count = node_map[type] || 0;
         node_map[type] = count + 1;
@@ -61,7 +61,7 @@ export const parse_gos_to_simple_graph = (content) => {
         current_type = is_barrier ? 'barrier' : 'other';
       }
     }
-    const name = "End";
+    const name = 'End';
     if (current_type !== 'barrier' && !(edge_map[current]?.has(name))) {
       result.edges.push([current, name]);
       if (!edge_map[current]) {
@@ -94,15 +94,15 @@ export const parse_gos_to_full_graph = (content) => {
   }
   for (let i = 0; i < procs.length; i++) {
     const lines = procs[i].split(/\r?\n/);
-    let current = "Start";
-    let current_type = "barrier";
+    let current = 'Start';
+    let current_type = 'barrier';
     for (let j = 0; j < lines.length; j++) {
       const line = lines[j].trimStart();
-      const is_barrier = line.indexOf("barrier") === 0;
-      const is_run = line.indexOf("run") === 0;
-      const is_move = line.indexOf("move") === 0;
-      const is_lock = line.indexOf("lock") === 0;
-      const is_unlock = line.indexOf("unlock") === 0;
+      const is_barrier = line.indexOf('barrier') === 0;
+      const is_run = line.indexOf('run') === 0;
+      const is_move = line.indexOf('move') === 0;
+      const is_lock = line.indexOf('lock') === 0;
+      const is_unlock = line.indexOf('unlock') === 0;
       const args = line.split(' ');
       let name = args[1];
       if (is_barrier) {
@@ -114,12 +114,12 @@ export const parse_gos_to_full_graph = (content) => {
       else if (is_run || is_move) {
         let display, type;
         if (is_move) {
-          display = "mover";
-          type = "move";
+          display = 'mover';
+          type = 'move';
         }
         else {
           display = name2type.get(name) || name;
-          type = "run";
+          type = 'run';
         }
         const count = node_map[type] || 0;
         node_map[type] = count + 1;
@@ -131,14 +131,14 @@ export const parse_gos_to_full_graph = (content) => {
         const count = node_map[name] || 0;
         node_map[name] = count + 1;
         name = `${name}_${count}`;
-        result.nodes.push({ name: name, type: "lock", display: display });
+        result.nodes.push({ name: name, type: 'lock', display: display });
       }
       else if (is_unlock) {
         const display = name;
         const count = node_map[name] || 0;
         node_map[name] = count + 1;
         name = `${name}_${count}`;
-        result.nodes.push({ name: name, type: "unlock", display: display });
+        result.nodes.push({ name: name, type: 'unlock', display: display });
       }
       if (is_barrier || is_run || is_move || is_lock || is_unlock) {
         if (!(edge_map[current]?.has(name))) {
@@ -153,7 +153,7 @@ export const parse_gos_to_full_graph = (content) => {
         current_type = is_barrier ? 'barrier' : 'other';
       }
     }
-    const name = "End";
+    const name = 'End';
     if (!(edge_map[current]?.has(name))) {
       result.edges.push([current, name]);
       if (!edge_map[current]) {
@@ -168,19 +168,20 @@ export const parse_gos_to_full_graph = (content) => {
 
 function get_estimate(device, method) {
   const info = device_type[name2type.get(device)];
-  if (!info) throw Error(device + " not found");
+  if (!info) throw Error(device + ' not found');
   const estimate = info['estimator']['estimate'];
   if (typeof estimate === 'number') {
     return estimate;
   }
   const method_estimate = estimate.filter(v => v[0] === method);
-  // if (!method_estimate) throw Error(method + " not found on " + device);
+  // if (!method_estimate) throw Error(method + ' not found on ' + device);
   if (!method_estimate) return 1;
   return method_estimate[0][1];
 }
 
 // TODO: precompile lock time per region for resolving collision
 export const parse_gos_to_timeline = (content) => {
+  if (!content) return {};
   const graph = new Graph(parse_gos_to_full_graph(content));
   const stack = []; // use stack to enforce always going through a proc if possible
   const prereq_count_map = graph.get_prereq_count(graph);

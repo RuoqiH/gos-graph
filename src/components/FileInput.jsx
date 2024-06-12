@@ -10,6 +10,6 @@ export const FileInputComponent = ({ onFileInput }) => {
     reader.readAsText(file);
   }
   return (
-    <input type="file" onChange={(e) => readFile(e)} />
+    <input type='file' onChange={(e) => readFile(e)} />
   );
 };

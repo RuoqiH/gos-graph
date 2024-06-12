@@ -62,19 +62,6 @@ const border_colors = [
   'rgb(30, 173, 44)',
 ]
 
-const options = {
-  indexAxis: 'y',
-  borderSkipped: false,
-  scales: {
-    x: {
-      min: 0,
-      max: 1500,
-    },
-    y: {
-      stacked: true,
-    }
-  },
-}
 
 
 
@@ -85,7 +72,7 @@ provide {
 */
 // {
 //   label: '',
-//   data: [{x:[20, 65], y: "device 1"}],
+//   data: [{x:[20, 65], y: 'device 1'}],
 //   backgroundColor: fill_colors,
 //   borderColor: border_colors,
 //   borderWidth: 1
@@ -122,7 +109,7 @@ function construct_data(content) {
     const intervals = timeline[lock_names[i]];
     const track = tracks[intervals.type];
     lock_to_track_number[lock_names[i]] = [];
-    if (!track) throw Error("???");
+    if (!track) throw Error('???');
     for (let j = 0; j < intervals.locks.length; j++) {
       const track_number = get_track_number(
         track,
@@ -151,15 +138,36 @@ function construct_data(content) {
       borderWidth: 1,
     })
   }
-  return datasets;
+  const labels = [];
+  const track_names = Object.keys(tracks);
+  for (let i = 0; i < track_names.length; i++) {
+    for (let j = 0; j < tracks[track_names[i]].length; j++) {
+      labels.push(`${track_names[i]}_track_${j}`);
+    }
+  }
+  return { labels, datasets };
 }
 
 export const Timeline = ({ content }) => {
+  const options = {
+    indexAxis: 'y',
+    borderSkipped: false,
+    scales: {
+      x: {
+        min: 0,
+        max: 1750,
+      },
+      y: {
+        stacked: true,
+      }
+    },
+  }
+  const { labels, datasets } = construct_data(content);
   return (
     <div style={{ width: '1000px', height: '600px' }}>
       <Bar
         options={options}
-        data={{ datasets: construct_data(content) }}
+        data={{ labels: labels, datasets: datasets }}
       />
     </div>
   )

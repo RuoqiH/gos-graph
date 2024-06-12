@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import Graph from "graphology";
+import React, { useEffect, useState } from 'react';
+import Graph from 'graphology';
 import {
   SigmaContainer,
   useRegisterEvents,
   useLoadGraph,
   useSigma,
-} from "@react-sigma/core";
-import dagre from "dagre";
-import "@react-sigma/core/lib/react-sigma.min.css";
+} from '@react-sigma/core';
+import dagre from 'dagre';
+import '@react-sigma/core/lib/react-sigma.min.css';
 import { parse_gos_to_full_graph } from '../helper/utils'
 
 const GraphEvents = () => {
@@ -20,15 +20,15 @@ const GraphEvents = () => {
     registerEvents({
       downNode: (e) => {
         setDraggedNode(e.node);
-        sigma.getGraph().setNodeAttribute(e.node, "highlighted", true);
+        sigma.getGraph().setNodeAttribute(e.node, 'highlighted', true);
       },
       // On mouse move, if the drag mode is enabled, we change the position of the draggedNode
       mousemovebody: (e) => {
         if (!draggedNode) return;
         // Get new position of node
         const pos = sigma.viewportToGraph(e);
-        sigma.getGraph().setNodeAttribute(draggedNode, "x", pos.x);
-        sigma.getGraph().setNodeAttribute(draggedNode, "y", pos.y);
+        sigma.getGraph().setNodeAttribute(draggedNode, 'x', pos.x);
+        sigma.getGraph().setNodeAttribute(draggedNode, 'y', pos.y);
 
         // Prevent sigma to move camera:
         e.preventSigmaDefault();
@@ -39,7 +39,7 @@ const GraphEvents = () => {
       mouseup: () => {
         if (draggedNode) {
           setDraggedNode(null);
-          sigma.getGraph().removeNodeAttribute(draggedNode, "highlighted");
+          sigma.getGraph().removeNodeAttribute(draggedNode, 'highlighted');
         }
       },
       // Disable the autoscale at the first down interaction
@@ -51,14 +51,14 @@ const GraphEvents = () => {
 
   return null;
 };
-const sigmaStyle = { height: "600px", width: "1000px", backgroundColor: '#837c7c' };
+const sigmaStyle = { height: '600px', width: '1000px', backgroundColor: '#837c7c' };
 
 const type2color = {
-  'barrier': "#FA4F40",
-  'run': "#FABF40",
-  'move': "#FABF40",
-  'lock': "#97fa40",
-  'unlock': "#40fab9",
+  'barrier': '#FA4F40',
+  'run': '#FABF40',
+  'move': '#FABF40',
+  'lock': '#97fa40',
+  'unlock': '#40fab9',
 }
 
 const createGraph = (data) => {
@@ -66,10 +66,10 @@ const createGraph = (data) => {
   data.nodes.forEach(e => {
     let color = type2color[e.type]
     if (e.name === 'Start') {
-      color = "#1c62fb"
+      color = '#1c62fb'
     }
     else if (e.name === 'End') {
-      color = "#0f266c"
+      color = '#0f266c'
     }
     graph.addNode(e.name, {
       size: 15,
