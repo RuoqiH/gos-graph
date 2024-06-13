@@ -183,8 +183,9 @@ function get_estimate(device, method) {
   return method_estimate[0][1];
 }
 
+// TODO: fix script tag parsing
+// TODO: fix multiple mover for a nest with choice
 function get_mover(src_nest, dest_nest) {
-  // adhoc for handling script tag, not robust at all...
   let ss = src_nest, dd = dest_nest;
   if (src_nest.indexOf("[%") === 0) {
     ss = src_nest.split(':')[1].split("%]")[0].trim();
