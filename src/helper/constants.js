@@ -1254,19 +1254,15 @@ for (let i = 0; i < movers.length; i++) {
     const nest = move_graph[j];
     if (regions[nest]) {
       for (let k = 0; k < regions[nest].locations.length; k++) {
-        if (nest_2_mover.get(regions[nest].locations[k]) !== undefined) {
-          nest_2_mover.set(regions[nest].locations[k], null);
+        if (nest_2_mover.get(regions[nest].locations[k]) === undefined) {
+          nest_2_mover.set(regions[nest].locations[k], []);
         }
-        else {
-          nest_2_mover.set(regions[nest].locations[k], mover.name);
-        }
+        nest_2_mover.get(regions[nest].locations[k]).push(mover.name);
       }
     }
-    if (nest_2_mover.get(move_graph[j]) !== undefined) {
-      nest_2_mover.set(move_graph[j], null);
+    if (nest_2_mover.get(nest) === undefined) {
+      nest_2_mover.set(nest, []);
     }
-    else {
-      nest_2_mover.set(move_graph[j], mover.name);
-    }
+    nest_2_mover.get(nest).push(mover.name);
   }
 }

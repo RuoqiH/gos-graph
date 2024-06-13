@@ -184,22 +184,27 @@ function get_estimate(device, method) {
 }
 
 function get_mover(src_nest, dest_nest) {
-  // adhoc for handling script tag, not robust
+  // adhoc for handling script tag, not robust at all...
+  let ss = src_nest, dd = dest_nest;
   if (src_nest.indexOf("[%") === 0) {
-    src_nest = src_nest.split(':')[1].split("%]")[0].trim();
+    ss = src_nest.split(':')[1].split("%]")[0].trim();
   }
   if (dest_nest.indexOf("[%") === 0) {
-    dest_nest = dest_nest.split(':')[1].split("%]")[0].trim();
+    dd = dest_nest.split(':')[1].split("%]")[0].trim();
   }
-  const mover_src = nest_2_mover.get(src_nest);
-  const mover_dest = nest_2_mover.get(dest_nest);
+  const mover_src = nest_2_mover.get(ss);
+  const mover_dest = nest_2_mover.get(dd);
   if ((mover_src || mover_dest)) {
-    if (!mover_src || !mover_dest) {
-      return mover_src || mover_dest;
+    if (mover_src && mover_dest) {
+      if (mover_src[0]===mover_dest[0]) {
+        return mover_src[0];
+      }
+      else {
+        throw Error(`Mover not found for src: ${src_nest} and dest: ${dest_nest}\n src_mover: ${mover_src} \n dest_mover: ${mover_dest}`)
+      }
     }
-    if (mover_src === mover_dest) {
-
-    }
+    if (mover_src) { return mover_src[0]; }
+    if (mover_dest) { return mover_dest[0]; }
   }
   throw Error(`Mover not found for src: ${src_nest} and dest: ${dest_nest}\n src_mover: ${mover_src} \n dest_mover: ${mover_dest}`)
 }

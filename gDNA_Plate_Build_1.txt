@@ -92,8 +92,8 @@ proc norm_load {
   barrier tecan_loaded
 
   barrier after_run
-  move [%location: norm_plate_1%] [%lock_region_location_for_plate:SF2-PREAMP-A-RTS%] barcode=norm_plate_1 labware_type=NORM_RACK
-  move [%location: norm_plate_2%] [%lock_region_location_for_plate:SF2-PREAMP-A-RTS%] barcode=norm_plate_2 labware_type=NORM_RACK
+  move [%location:norm_plate_1%] [%lock_region_location_for_plate:SF2-PREAMP-A-RTS%] barcode=norm_plate_1 labware_type=NORM_RACK
+  move [%location:norm_plate_2%] [%lock_region_location_for_plate:SF2-PREAMP-A-RTS%] barcode=norm_plate_2 labware_type=NORM_RACK
   barrier norm_unloaded
 }
 
