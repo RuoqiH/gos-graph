@@ -75,7 +75,7 @@ export const parse_gos_to_simple_graph = (content) => {
 }
 
 export const parse_gos_to_full_graph = (content) => {
-  const result = {
+  const graph = {
     nodes: [
       { name: 'Start', type: 'barrier' },
       { name: 'End', type: 'barrier' },
@@ -84,15 +84,19 @@ export const parse_gos_to_full_graph = (content) => {
   const node_map = { 'Start': 1, 'End': 1 };
   const edge_map = {};
   const proc_prefix = /proc .*{/
-  const index = content.indexOf(proc_prefix);
-  let procs;
-  if (index !== -1) {
-    procs = content.substring(index).split(proc_prefix);
+  const procs = content.split(proc_prefix).slice(1);
+  const find_name_prefix = /proc\s+(\w+)\s*{/g;
+  const procs_name = [];
+  let matches;
+  while ((matches = find_name_prefix.exec(content)) !== null) {
+    procs_name.push(matches[1]);
   }
-  else {
-    procs = content.split(proc_prefix);
+  if (procs.length !== procs_name.length) {
+    throw Error("Procs length doesn't match");
   }
+
   for (let i = 0; i < procs.length; i++) {
+    const proc_name = procs_name[i];
     const lines = procs[i].split(/\r?\n/);
     let current = 'Start';
     for (let j = 0; j < lines.length; j++) {
@@ -106,7 +110,7 @@ export const parse_gos_to_full_graph = (content) => {
       let name = args[1];
       if (is_barrier) {
         if (!node_map[name]) {
-          result.nodes.push({ name: name, type: 'barrier', display: name });
+          graph.nodes.push({ name: name, type: 'barrier', display: name, proc: proc_name });
           node_map[name] = 1;
         }
       }
@@ -123,25 +127,25 @@ export const parse_gos_to_full_graph = (content) => {
         const count = node_map[type] || 0;
         node_map[type] = count + 1;
         name = `${type}_${count}`;
-        result.nodes.push({ name: name, type: type, display: display, args: args });
+        graph.nodes.push({ name: name, type: type, display: display, args: args, proc: proc_name });
       }
       else if (is_lock) {
         const display = name;
         const count = node_map[name] || 0;
         node_map[name] = count + 1;
         name = `${name}_${count}`;
-        result.nodes.push({ name: name, type: 'lock', display: display });
+        graph.nodes.push({ name: name, type: 'lock', display: display, proc: proc_name });
       }
       else if (is_unlock) {
         const display = name;
         const count = node_map[name] || 0;
         node_map[name] = count + 1;
         name = `${name}_${count}`;
-        result.nodes.push({ name: name, type: 'unlock', display: display });
+        graph.nodes.push({ name: name, type: 'unlock', display: display, proc: proc_name });
       }
       if (is_barrier || is_run || is_move || is_lock || is_unlock) {
         if (!(edge_map[current]?.has(name))) {
-          result.edges.push([current, name]);
+          graph.edges.push([current, name]);
           if (!edge_map[current]) {
             edge_map[current] = new Set([name]);
           } else {
@@ -153,7 +157,7 @@ export const parse_gos_to_full_graph = (content) => {
     }
     const name = 'End';
     if (!(edge_map[current]?.has(name))) {
-      result.edges.push([current, name]);
+      graph.edges.push([current, name]);
       if (!edge_map[current]) {
         edge_map[current] = new Set([name]);
       } else {
@@ -161,7 +165,7 @@ export const parse_gos_to_full_graph = (content) => {
       }
     }
   }
-  return result;
+  return { graph, procs_name };
 }
 
 const MOVER_ESTIMATE = 19;
@@ -201,20 +205,20 @@ function get_mover(src_nest, dest_nest) {
 }
 
 export const parse_gos_to_timeline = (content) => {
-  console.log(get_estimate("sf2-preamp-a-mover-2", "move_plate"));
-  if (!content) return {};
-  const graph = new Graph(parse_gos_to_full_graph(content));
+  if (!content) return { timeline: {} };
+  const { graph, procs_name } = parse_gos_to_full_graph(content);
+  const gg = new Graph(graph);
   const stack = []; // use stack to enforce always going through a proc if possible
-  const prereq_count_map = graph.get_prereq_count(graph);
+  const prereq_count_map = gg.get_prereq_count();
   prereq_count_map.forEach((v, k) => {
     if (v === 0) stack.push(k);
   })
-  const finish_time_map = graph.get_node_map();
+  const finish_time_map = gg.get_node_map();
   const lock_map = new Map();
   const timeline = new TimelineContainer();
   while (stack.length > 0) {
     const node_name = stack.pop();
-    const node = graph.get_node(node_name);
+    const node = gg.get_node(node_name);
     for (let i = 0; i < node.next.length; i++) {
       const key = node.next[i].value.name;
       const count = prereq_count_map.get(key);
@@ -239,7 +243,7 @@ export const parse_gos_to_timeline = (content) => {
       const mover = get_mover(src, dest);
       const lock_start = timeline.find_time_from(finish_time, MOVER_ESTIMATE, mover);
       finish_time = lock_start + MOVER_ESTIMATE;
-      timeline.add_interval(mover, lock_start, finish_time);
+      timeline.add_interval(mover, lock_start, finish_time, node.value.proc);
     }
     else if (node.value.type === 'lock') {
       const lock_name = node.value.display;
@@ -281,7 +285,7 @@ export const parse_gos_to_timeline = (content) => {
     else if (node.value.type === 'unlock') {
       const lock_name = node.value.display;
       const lock_start = lock_map.get(lock_name);
-      timeline.add_interval(lock_name, lock_start, finish_time);
+      timeline.add_interval(lock_name, lock_start, finish_time, node.value.proc);
     }
     finish_time_map.set(node_name, finish_time);
   }
@@ -297,7 +301,7 @@ export const parse_gos_to_timeline = (content) => {
     if (!result[name]) {
       result[name] = { locks: [], type: type }
     }
-    result[name].locks.push([interval.start, interval.end]);
+    result[name].locks.push([interval.start, interval.end, interval.data]);
   }
-  return result;
+  return { timeline: result, procs_name };
 }

@@ -51,7 +51,6 @@ const GraphEvents = () => {
 
   return null;
 };
-const sigmaStyle = { height: '600px', width: '1000px', backgroundColor: '#837c7c' };
 
 const type2color = {
   'barrier': '#FA4F40',
@@ -72,7 +71,7 @@ const createGraph = (data) => {
       color = '#0f266c'
     }
     graph.addNode(e.name, {
-      size: 15,
+      size: 8,
       label: e.display,
       color: color,
     });
@@ -110,13 +109,15 @@ const UseGraph = ({ content }) => {
   const loadGraph = useLoadGraph(); // Ensuring useLoadGraph is within SigmaContainer
   React.useEffect(() => {
     if (!content) return;
-    const data = parse_gos_to_full_graph(content);
-    loadGraph(createGraph(data));
+    const { graph } = parse_gos_to_full_graph(content);
+    loadGraph(createGraph(graph));
   }, [content])
   return null;
 };
 
-export const DisplayFullGraph = ({ content }) => {
+export const DisplayFullGraph = ({ content, dimension }) => {
+  const [width, height] = dimension;
+  const sigmaStyle = { height: height, width: width, backgroundColor: '#837c7c' };
   return (
     <SigmaContainer style={sigmaStyle}>
       <GraphEvents />

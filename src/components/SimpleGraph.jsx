@@ -51,7 +51,6 @@ const GraphEvents = () => {
 
   return null;
 };
-const sigmaStyle = { height: '600px', width: '1000px', backgroundColor: '#837c7c' };
 
 const createGraph = (data) => {
   const graph = new Graph();
@@ -108,7 +107,9 @@ const UseGraph = ({ content }) => {
   return null;
 };
 
-export const DisplaySimpleGraph = ({ content }) => {
+export const DisplaySimpleGraph = ({ content, dimension }) => {
+  const [width, height] = dimension;
+  const sigmaStyle = { height: height, width: width, backgroundColor: '#837c7c' };
   return (
     <SigmaContainer style={sigmaStyle}>
       <GraphEvents />

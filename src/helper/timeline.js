@@ -3,20 +3,20 @@ export class TimelineContainer {
     this.timeline = [];
   }
 
-  add_interval(name, start, end) {
-    this.timeline.push([start, end, name]);
+  add_interval(name, start, end, data) {
+    this.timeline.push([start, end, name, data]);
     this.timeline.sort((a, b) => a[1] - b[1]);
   }
 
   find_time_from(start, duration, name) {
     let s = start;
-    if (duration===null) {
+    if (duration === null) {
       // if no duration is found, put it at the end of any conflict to avoid collision
-      this.timeline.filter((e => e[2]===name)).forEach(e=>{s = Math.max(e[1], s)})
+      this.timeline.filter((e => e[2] === name)).forEach(e => { s = Math.max(e[1], s) })
       return s;
     }
     for (let i = 0; i < this.timeline.length; i++) {
-      const [t_start, t_end, t_name] = this.timeline[i];
+      const [t_start, t_end, t_name, t_data] = this.timeline[i];
       if (t_name === name) {
         if (Math.max(t_start, s) < Math.min(t_end, s + duration)) {
           s = t_end;
@@ -27,7 +27,7 @@ export class TimelineContainer {
   }
 
   get_intervals() {
-    return this.timeline.map(v => ({ start: v[0], end: v[1], name: v[2] }));
+    return this.timeline.map(v => ({ start: v[0], end: v[1], name: v[2], data: v[3] }));
   }
 
   validate() {

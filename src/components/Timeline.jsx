@@ -101,7 +101,7 @@ function get_track_number(track, start, end) {
 }
 
 function construct_data(content) {
-  const timeline = parse_gos_to_timeline(content);
+  const { timeline } = parse_gos_to_timeline(content);
   const lock_names = Object.keys(timeline);
   const tracks = { device: [], location: [] }
   const lock_to_track_number = {};
@@ -150,23 +150,74 @@ function construct_data(content) {
   return { max, labels, datasets };
 }
 
-export const Timeline = ({ content }) => {
-  const { max, labels, datasets } = construct_data(content);
+function construct_data_by_proc(content) {
+  const { timeline, procs_name } = parse_gos_to_timeline(content);
+  const lock_names = Object.keys(timeline);
+  const datasets = [];
+  let max = 0;
+  for (let i = 0; i < lock_names.length; i++) {
+    const intervals = timeline[lock_names[i]];
+    const data = [];
+    for (let j = 0; j < intervals.locks.length; j++) {
+      data.push({
+        x: [intervals.locks[j][0], intervals.locks[j][1]],
+        y: intervals.locks[j][2],
+      })
+      max = Math.max(intervals.locks[j][1], max);
+    }
+    datasets.push({
+      label: lock_names[i],
+      data: data,
+      backgroundColor: fill_colors[i],
+      borderColor: border_colors[i],
+      borderWidth: 1,
+    })
+  }
+  return { max, labels: procs_name, datasets };
+}
+
+export const Timeline = ({ content, by_process, dimension }) => {
+  let { max, labels, datasets } = construct_data(content);
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     indexAxis: 'y',
     borderSkipped: false,
     scales: {
       x: {
         min: 0,
         max: max,
+        border: {
+          display: false,
+        },
+        grid: {
+          display: false
+        }
       },
       y: {
         stacked: true,
+        afterFit: function (scaleInstance) {
+          scaleInstance.width = 160;
+        },
+        border: {
+          display: false,
+        },
+        grid: {
+          lineWidth: 1,
+          color: '#526c7f',
+        }
       }
     },
   }
+  if (by_process) {
+    ({ max, labels, datasets } = construct_data_by_proc(content));
+    options.scales.y.stacked = false;
+  }
+  const [width, height] = dimension;
+  const sigmaStyle = { height: height, width: width };
+
   return (
-    <div style={{ width: '1000px', height: '600px' }}>
+    <div style={sigmaStyle}>
       <Bar
         options={options}
         data={{ labels: labels, datasets: datasets }}
