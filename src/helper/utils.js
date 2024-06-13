@@ -197,7 +197,7 @@ function get_mover(src_nest, dest_nest) {
   const mover_dest = nest_2_mover.get(dd);
   if ((mover_src || mover_dest)) {
     if (mover_src && mover_dest) {
-      if (mover_src[0]===mover_dest[0]) {
+      if (mover_src[0] === mover_dest[0]) {
         return mover_src[0];
       }
       else {
