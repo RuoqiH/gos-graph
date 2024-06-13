@@ -10,6 +10,11 @@ export class TimelineContainer {
 
   find_time_from(start, duration, name) {
     let s = start;
+    if (duration===null) {
+      // if no duration is found, put it at the end of any conflict to avoid collision
+      this.timeline.filter((e => e[2]===name)).forEach(e=>{s = Math.max(e[1], s)})
+      return s;
+    }
     for (let i = 0; i < this.timeline.length; i++) {
       const [t_start, t_end, t_name] = this.timeline[i];
       if (t_name === name) {
