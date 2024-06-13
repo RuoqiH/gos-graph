@@ -1,4 +1,4 @@
-import { device_type, devices } from './constants';
+import { device_type, devices, movers, nest_2_mover } from './constants';
 import { Graph } from './graph';
 import { TimelineContainer } from './timeline'
 
@@ -164,7 +164,8 @@ export const parse_gos_to_full_graph = (content) => {
   return result;
 }
 
-const STEP_MIN_TIME = 1;
+const MOVER_ESTIMATE = 19;
+
 function get_estimate(device, method) {
   const info = device_type[name2type.get(device)];
   if (!info) throw Error(device + ' not found');
@@ -174,12 +175,31 @@ function get_estimate(device, method) {
   }
   const method_estimate = estimate.filter(v => v[0] === method);
   // if (!method_estimate) throw Error(method + ' not found on ' + device);
-  if (!method_estimate) return STEP_MIN_TIME;
+  if (!method_estimate) return 0;
   return method_estimate[0][1];
 }
 
+function get_mover(src_nest, dest_nest) {
+  // adhoc for handling script tag, not robust
+  if (src_nest.indexOf("[%") === 0) {
+    src_nest = src_nest.split(':')[1].split("%]")[0].trim();
+  }
+  if (dest_nest.indexOf("[%") === 0) {
+    dest_nest = dest_nest.split(':')[1].split("%]")[0].trim();
+  }
+  const mover_src = nest_2_mover.get(src_nest);
+  const mover_dest = nest_2_mover.get(dest_nest);
+  if ((mover_src || mover_dest)) {
+    if (!mover_src || !mover_dest) {
+      return mover_src || mover_dest;
+    }
+    if (mover_src === mover_dest) {
 
-// TODO: precompile lock time per region for resolving collision
+    }
+  }
+  throw Error(`Mover not found for src: ${src_nest} and dest: ${dest_nest}\n src_mover: ${mover_src} \n dest_mover: ${mover_dest}`)
+}
+
 export const parse_gos_to_timeline = (content) => {
   console.log(get_estimate("sf2-preamp-a-mover-2", "move_plate"));
   if (!content) return {};
@@ -214,7 +234,12 @@ export const parse_gos_to_timeline = (content) => {
       finish_time += get_estimate(device, method);
     }
     if (node.value.type === 'move') {
-      finish_time += 19;
+      const src = node.value.args[1];
+      const dest = node.value.args[2];
+      const mover = get_mover(src, dest);
+      const lock_start = timeline.find_time_from(finish_time, MOVER_ESTIMATE, mover);
+      finish_time = lock_start + MOVER_ESTIMATE;
+      timeline.add_interval(mover, lock_start, finish_time);
     }
     else if (node.value.type === 'lock') {
       const lock_name = node.value.display;
@@ -229,7 +254,7 @@ export const parse_gos_to_timeline = (content) => {
           break;
         }
         else if (curr.value.type === 'move') {
-          duration += 19;
+          duration += MOVER_ESTIMATE;
         }
         else if (curr.value.type === 'run') {
           const device = curr.value.args[1];
@@ -239,9 +264,6 @@ export const parse_gos_to_timeline = (content) => {
         else if (curr.value.type === 'unlock' && curr.value.display === lock_name) {
           found = true;
           break;
-        }
-        else {
-          duration += STEP_MIN_TIME;
         }
       }
       if (has_barrier) {
@@ -261,7 +283,7 @@ export const parse_gos_to_timeline = (content) => {
       const lock_start = lock_map.get(lock_name);
       timeline.add_interval(lock_name, lock_start, finish_time);
     }
-    finish_time_map.set(node_name, finish_time + STEP_MIN_TIME); // +STEP_MIN_TIME for each step
+    finish_time_map.set(node_name, finish_time);
   }
   const result = {};
 

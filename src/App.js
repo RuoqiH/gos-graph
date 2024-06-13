@@ -7,7 +7,7 @@ import { Timeline } from './components/Timeline';
 
 
 function App() {
-  const [tab, setTab] = useState('simple graph');
+  const [tab, setTab] = useState('timeline');
   const [data, setData] = useState(null);
   return (
     <div className='App'>
@@ -15,9 +15,9 @@ function App() {
         <div style={{ display: 'flex', flexDirection: 'row' }}>
           <FileInputComponent onFileInput={(data) => setData(data)} />
           <select id='choices' onChange={(e) => setTab(e.target.value)}>
+            <option value='timeline'>Timeline</option>
             <option value='simple graph'>Simple Graph</option>
             <option value='full graph'>Full Graph</option>
-            <option value='timeline'>Timeline</option>
           </select>
         </div>
         {
