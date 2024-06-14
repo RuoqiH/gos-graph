@@ -1,0 +1,97 @@
+proc move_plate {
+  run sf2-preamp-a-mover-1 home_gripper
+
+  lock sf2-preamp-a-transfer-1-1
+
+  lock sf2-preamp-a-steristore-1_nest-1
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-steristore-1_nest-1
+  move sf2-preamp-a-steristore-1_nest-1 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-steristore-1_nest-1
+
+  lock sf2-preamp-a-plateloc-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-plateloc-1_nest
+  move sf2-preamp-a-plateloc-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-plateloc-1_nest
+
+  lock sf2-preamp-a-xpeel-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-xpeel-1_nest
+  move sf2-preamp-a-xpeel-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-xpeel-1_nest
+
+  lock sf2-preamp-a-vspin-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-vspin-1_nest
+  move sf2-preamp-a-vspin-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-vspin-1_nest
+
+  lock sf2-preamp-a-balancer-1-1
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-balancer-1-1
+  move sf2-preamp-a-balancer-1-1 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-balancer-1-1
+
+  lock sf2-preamp-a-delidder-1
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-delidder-1
+  move sf2-preamp-a-delidder-1 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-delidder-1
+
+  lock sf2-preamp-a-labeling-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-labeling-1_nest
+  move sf2-preamp-a-labeling-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-labeling-1_nest
+
+  lock sf2-preamp-a-bioshake-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-bioshake-1_nest
+  move sf2-preamp-a-bioshake-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-bioshake-1_nest
+
+  lock sf2-preamp-a-bioshake-2_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-bioshake-2_nest
+  move sf2-preamp-a-bioshake-2_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-bioshake-2_nest
+
+  lock sf2-preamp-a-bioshake-3_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-bioshake-3_nest
+  move sf2-preamp-a-bioshake-3_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-bioshake-3_nest
+
+  lock sf2-preamp-a-m200-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-m200-1_nest
+  move sf2-preamp-a-m200-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-m200-1_nest
+
+  lock sf2-preamp-a-m200-hold-nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-m200-hold-nest
+  move sf2-preamp-a-m200-hold-nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-m200-hold-nest
+
+  lock sf2-preamp-a-microserve-1_nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-microserve-1_nest
+  move sf2-preamp-a-microserve-1_nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-microserve-1_nest
+
+  lock sf2-preamp-a-a-io-1_input-1
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-a-io-1_input-1
+  move sf2-preamp-a-a-io-1_input-1 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-a-io-1_input-1
+
+  lock sf2-preamp-a-a-io-1_input-5
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-a-io-1_input-5
+  move sf2-preamp-a-a-io-1_input-5 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-a-io-1_input-5
+
+  lock sf2-preamp-a-io-1_output-1
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-io-1_output-1
+  move sf2-preamp-a-io-1_output-1 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-io-1_output-1
+
+  lock sf2-preamp-a-io-1_output-5
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-io-1_output-5
+  move sf2-preamp-a-io-1_output-5 sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-io-1_output-5
+
+  lock sf2-preamp-a-io-1_scan-nest
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-io-1_scan-nest
+  move sf2-preamp-a-io-1_scan-nest sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-io-1_scan-nest
+
+  unlock sf2-preamp-a-transfer-1-1
+}
