@@ -224,11 +224,20 @@ export const Timeline = ({ content, by_process, dimension }) => {
       const mid = (b1 + b2) / 2;
       const diff = (b2 - b1) / 2;
       const ratio = 1 - event.deltaY / diff;
-      return [Math.floor(mid - diff * ratio), Math.floor(mid + diff * ratio)];
+      const r1 = Math.max(Math.floor(mid - diff * ratio), 0)
+      const r2 = Math.max(Math.floor(mid + diff * ratio), 0)
+      return [r1, r2];
     });
   }
   const handleDrag = ({ deltaX }) => {
-    setBound(b => [b[0] - deltaX, b[1] - deltaX]);
+    setBound(b => {
+      const [b1, b2] = b;
+      const diff = (b2 - b1);
+      const offset = deltaX * diff / 1000;
+      const r1 = Math.max(Math.floor(b1 - offset), 0);
+      const r2 = Math.max(Math.floor(b2 - offset), diff);
+      return [r1, r2];
+    })
   }
   React.useEffect(() => {
     let { max } = construct_data(content);
