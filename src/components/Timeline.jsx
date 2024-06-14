@@ -10,6 +10,7 @@ import {
 } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { parse_gos_to_timeline } from '../helper/utils';
+import { ScrollListener, DragListener } from './Listener';
 
 ChartJS.register(
   CategoryScale,
@@ -178,6 +179,7 @@ function construct_data_by_proc(content) {
 
 export const Timeline = ({ content, by_process, dimension }) => {
   let { max, labels, datasets } = construct_data(content);
+  const [bound, setBound] = React.useState([0, 1000]);
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -185,8 +187,8 @@ export const Timeline = ({ content, by_process, dimension }) => {
     borderSkipped: false,
     scales: {
       x: {
-        min: 0,
-        max: max,
+        min: bound[0],
+        max: bound[1],
         border: {
           display: false,
         },
@@ -215,13 +217,33 @@ export const Timeline = ({ content, by_process, dimension }) => {
   }
   const [width, height] = dimension;
   const sigmaStyle = { height: height, width: width };
+  const handleScroll = (event) => {
+    console.log(event.deltaY);
+    setBound(b => {
+      const [b1, b2] = b;
+      const mid = (b1 + b2) / 2;
+      const diff = (b2 - b1) / 2;
+      const ratio = 1 - event.deltaY / diff;
+      return [Math.floor(mid - diff * ratio), Math.floor(mid + diff * ratio)];
+    });
+  }
+  const handleDrag = ({ deltaX }) => {
+    setBound(b => [b[0] - deltaX, b[1] - deltaX]);
+  }
+  React.useEffect(() => {
+    let { max } = construct_data(content);
+    if (!max) max = 1000;
+    setBound([0, max]);
+  }, [content])
 
   return (
-    <div style={sigmaStyle}>
-      <Bar
-        options={options}
-        data={{ labels: labels, datasets: datasets }}
-      />
-    </div>
+    <DragListener onDrag={handleDrag}>
+      <ScrollListener style={sigmaStyle} onScroll={handleScroll}>
+        <Bar
+          options={options}
+          data={{ labels: labels, datasets: datasets }}
+        />
+      </ScrollListener>
+    </DragListener>
   )
 }
