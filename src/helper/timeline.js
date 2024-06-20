@@ -36,6 +36,7 @@ export class TimelineContainer {
       for (let j = i + 1; j < this.timeline.length; j++) {
         const [start_j, end_j, name_j] = this.timeline[j];
         if (name_i === name_j && Math.max(start_i, start_j) < Math.min(end_i, end_j)) {
+          alert("Collision, check console!!!")
           console.error(this.get_intervals());
         }
       }

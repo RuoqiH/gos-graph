@@ -1,0 +1,171 @@
+# TODO biohaz
+
+# TODO nonhaz
+
+choice T1_SLN = [sln-1, sln-2]
+
+choice SS_NEST = [sf2-preamp-a-steristore-1_nest-1, sf2-preamp-a-steristore-1_nest-2]
+
+choice TRANSFER_A = [ sf2-preamp-a-transfer-1-1, sf2-preamp-a-transfer-1-2, sf2-preamp-a-transfer-1-3, sf2-preamp-a-transfer-1-4, sf2-preamp-a-transfer-1-5, sf2-preamp-a-transfer-1-6, sf2-preamp-a-transfer-1-7, sf2-preamp-a-transfer-1-8, sf2-preamp-a-transfer-1-9, sf2-preamp-a-transfer-1-10 ]
+
+proc run {
+  lock sf2-preamp-a-t1e_<%T1_SLN%>
+  barrier sln_locked
+
+  barrier before_run
+
+  lock sf2-preamp-a-t1e
+
+  # Move the tip box on deck
+  run sf2-preamp-a-t1e setworktable !json{"worktable_plates":[["<%T1_SLN%>-1","diti_150ul_bc","T1 DiTi 150ul Filter MCA96"]]}
+  run sf2-preamp-a-t1e move_plate src=<%T1_SLN%>-1 dest=3pos-1-3
+  barrier tip_box_on_deck
+
+  # Wait for the lysis plate to load
+  barrier lysis_loaded
+
+  run sf2-preamp-a-t1e elutionv5 lysis_bc=BLD_LYS_TEST_1 extraction_bc=G_XTR_TEST_1 lysis_src=<%T1_SLN%>-1 extraction_src=<%T1_SLN%>-4 pipeline_job_id=1
+
+  barrier after_run
+
+  barrier extr_unloaded
+
+  barrier lysis_unloaded
+
+  # Move tip box off deck
+  # First need to run prepare remove tips script to get the right worktable in evoware
+  run sf2-preamp-a-t1e runevowarescript script=Elution_v5_prepare_remove_tips
+  run sf2-preamp-a-t1e setworktable !json{"worktable_plates":[["3pos-1-3","diti_150ul_bc","T1 DiTi 150ul Filter MCA96"]]}
+  run sf2-preamp-a-t1e move_plate src=3pos-1-3 dest=<%T1_SLN%>-1
+  move sf2-preamp-a-t1e_<%T1_SLN%>-1 sf2-preamp-a-trash-1-1
+
+  # Move arms out of way
+  run sf2-preamp-a-t1e runevowarescript script=Move_Arms_Out_Of_Way
+
+  unlock sf2-preamp-a-t1e
+  unlock sf2-preamp-a-t1e_<%T1_SLN%>
+}
+
+proc acquire_extr_hotel {
+  barrier sln_locked
+  lock sf2-preamp-a-t1e_<%T1_SLN%>-4
+  barrier hotels_acquired
+
+  barrier extr_unloaded
+  unlock sf2-preamp-a-t1e_<%T1_SLN%>-4
+}
+
+proc acquire_lysis_and_tip_hotel {
+  barrier sln_locked
+  lock sf2-preamp-a-t1e_<%T1_SLN%>-1
+  barrier hotels_acquired
+
+  barrier lysis_unloaded
+  unlock sf2-preamp-a-t1e_<%T1_SLN%>-1
+}
+
+proc load_lysis {
+  barrier tip_box_on_deck
+  barrier extr_loaded
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A%>
+
+  lock sf2-preamp-a-mover-1
+  run sf2-preamp-a-mover-1 move_plate src=[%release_region_location_given_plate:BLD_LYS_TEST_1%] dest=<%TRANSFER_A%> barcode=BLD_LYS_TEST_1
+  unlock sf2-preamp-a-mover-1
+
+  lock sf2-preamp-a-mover-2
+  run sf2-preamp-a-mover-2 move_plate src=<%TRANSFER_A%> dest=sf2-preamp-a-t1e_<%T1_SLN%>-1 barcode=BLD_LYS_TEST_1
+  unlock sf2-preamp-a-mover-2
+
+  unlock <%TRANSFER_A%>
+
+  barrier lysis_loaded
+
+  barrier after_run
+  barrier extr_unloaded
+  move sf2-preamp-a-t1e_<%T1_SLN%>-1 sf2-preamp-a-trash-1-1 barcode=BLD_LYS_TEST_1
+  barrier lysis_unloaded
+}
+
+proc load_extr {
+  barrier hotels_acquired
+  lock sf2-preamp-a-labeling-1
+
+  lock sf2-preamp-a-microserve-1
+  run sf2-preamp-a-microserve-1 unload_labware labware_type_name=TECAN_EXTRACTION barcode=G_XTR_TEST_1
+  move sf2-preamp-a-microserve-1_nest sf2-preamp-a-labeling-1_nest
+  unlock sf2-preamp-a-microserve-1
+
+  run sf2-preamp-a-labeling-1 print_and_apply_barcode barcode=G_XTR_TEST_1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A%>
+
+  move sf2-preamp-a-labeling-1_nest <%TRANSFER_A%> barcode=G_XTR_TEST_1
+
+  unlock sf2-preamp-a-labeling-1
+
+  lock sf2-preamp-a-mover-2
+  run sf2-preamp-a-mover-2 move_plate src=<%TRANSFER_A%> dest=sf2-preamp-a-t1e_<%T1_SLN%>-4 barcode=G_XTR_TEST_1
+  unlock sf2-preamp-a-mover-2
+
+  unlock <%TRANSFER_A%>
+
+  barrier before_run
+  barrier extr_loaded
+  barrier after_run
+  lock sf2-preamp-a-plateloc-1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A%>
+
+  lock sf2-preamp-a-mover-2
+  run sf2-preamp-a-mover-2 move_plate src=sf2-preamp-a-t1e_<%T1_SLN%>-4 dest=<%TRANSFER_A%> barcode=G_XTR_TEST_1
+  unlock sf2-preamp-a-mover-2
+
+  barrier extr_unloaded
+
+  move <%TRANSFER_A%> sf2-preamp-a-plateloc-1_nest barcode=G_XTR_TEST_1
+
+  unlock <%TRANSFER_A%>
+
+  run sf2-preamp-a-plateloc-1 seal_plate barcode=G_XTR_TEST_1
+
+  lock <%SS_NEST%>
+  move sf2-preamp-a-plateloc-1_nest <%SS_NEST%> barcode=G_XTR_TEST_1
+  unlock sf2-preamp-a-plateloc-1
+
+  lock sf2-preamp-a-steristore-1
+  run sf2-preamp-a-steristore-1 place barcode=G_XTR_TEST_1 from_nest=<%SS_NEST%> stacker_type=STORAGE
+  unlock sf2-preamp-a-steristore-1
+
+  unlock <%SS_NEST%>
+}
+
+proc load_tips {
+  barrier hotels_acquired
+
+  lock sf2-preamp-a-delidder-1
+  lock sf2-preamp-a-microserve-1
+  run sf2-preamp-a-microserve-1 unload_labware labware_type_name=96_150ul_Tips_Box
+  lock sf2-preamp-a-transfer-1-1
+  lock sf2-preamp-a-mover-1
+  run sf2-preamp-a-mover-1 fetch_hold_plate src=sf2-preamp-a-microserve-1_nest dest=sf2-preamp-a-delidder-1_tecan
+  unlock sf2-preamp-a-microserve-1
+  run sf2-preamp-a-delidder-1 hold
+
+  run sf2-preamp-a-mover-1 deposit_plate dest=sf2-preamp-a-transfer-1-1
+  unlock sf2-preamp-a-mover-1
+
+  run sf2-preamp-a-delidder-1 release
+  unlock sf2-preamp-a-delidder-1
+
+  move sf2-preamp-a-transfer-1-1 sf2-preamp-a-t1e_<%T1_SLN%>-1
+  unlock sf2-preamp-a-transfer-1-1
+  barrier before_run
+}

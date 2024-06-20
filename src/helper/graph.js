@@ -32,4 +32,8 @@ export class Graph {
   get_node(node_name) {
     return this.nodes.get(node_name);
   }
+
+  get_total() {
+    return this.nodes.size;
+  }
 }

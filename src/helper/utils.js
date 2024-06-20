@@ -179,7 +179,7 @@ function get_estimate(device, method) {
   }
   const method_estimate = estimate.filter(v => v[0] === method);
   // if (!method_estimate) throw Error(method + ' not found on ' + device);
-  if (!method_estimate) return 0;
+  if (method_estimate.length===0) return 0;
   return method_estimate[0][1];
 }
 
@@ -216,6 +216,7 @@ export const parse_gos_to_timeline = (content) => {
   const gg = new Graph(graph);
   const stack = []; // use stack to enforce always going through a proc if possible
   const prereq_count_map = gg.get_prereq_count();
+  let finished = 0;
   prereq_count_map.forEach((v, k) => {
     if (v === 0) stack.push(k);
   })
@@ -223,6 +224,7 @@ export const parse_gos_to_timeline = (content) => {
   const lock_map = new Map();
   const timeline = new TimelineContainer();
   while (stack.length > 0) {
+    finished++;
     const node_name = stack.pop();
     const node = gg.get_node(node_name);
     for (let i = 0; i < node.next.length; i++) {
@@ -294,6 +296,9 @@ export const parse_gos_to_timeline = (content) => {
       timeline.add_interval(lock_name, lock_start, finish_time, node.value.proc);
     }
     finish_time_map.set(node_name, finish_time);
+  }
+  if (finished != gg.get_total()) {
+    throw Error("There is a cycle");
   }
   const result = {};
 
