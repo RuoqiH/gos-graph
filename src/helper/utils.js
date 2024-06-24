@@ -4,6 +4,10 @@ import { TimelineContainer } from './timeline'
 
 const name2type = new Map(devices.map(item => [item.name, item.type]));
 
+const choice_dict = new Map();
+
+const intersect = (list1, list2) => [...new Set(list1)].filter(item => new Set(list2).has(item));
+
 export const parse_gos_to_simple_graph = (content) => {
   const result = {
     nodes: [
@@ -81,6 +85,19 @@ export const parse_gos_to_full_graph = (content) => {
       { name: 'End', type: 'barrier' },
     ], edges: []
   };
+
+  const all_lines = content.split(/\r?\n/);
+  for (let j = 0; j < all_lines.length; j++) {
+    const line = all_lines[j].trimStart();
+    const args = line.split(' ');
+    const is_choice = line.indexOf('choice') === 0;
+    let name = args[1];
+    if (is_choice) {
+      const choices = line.split('[')[1].split(']')[0].split(',');
+      choice_dict.set(name, choices.map(e=> e.trim()))
+    }
+  }
+
   const node_map = { 'Start': 1, 'End': 1 };
   const edge_map = {};
   const proc_prefix = /proc .*{/
@@ -170,7 +187,20 @@ export const parse_gos_to_full_graph = (content) => {
 
 const MOVER_ESTIMATE = 19;
 
+function is_choice(s) {
+  return s.indexOf("<%") >= 0 && s.indexOf("%>") >= 0
+}
+
+function resolve_choice(s) {
+  const regex = /<%([^%]+)%>/;
+  const match = s.match(regex)[1];
+  return choice_dict.get(match).map(e=>s.replace(`<%${match}%>`, e));
+}
+
 function get_estimate(device, method) {
+  if (is_choice(device)) {
+    device = resolve_choice(device)[0]
+  }
   const info = device_type[name2type.get(device)];
   if (!info) throw Error(device + ' not found');
   const estimate = info['estimator']['estimate'];
@@ -193,12 +223,19 @@ function get_mover(src_nest, dest_nest) {
   if (dest_nest.indexOf("[%") === 0) {
     dd = dest_nest.split(':')[1].split("%]")[0].trim();
   }
+  if (is_choice(src_nest)) {
+    ss = resolve_choice(src_nest)[0];
+  }
+  if (is_choice(dest_nest)) {
+    dd = resolve_choice(dest_nest)[0];
+  }
   const mover_src = nest_2_mover.get(ss);
   const mover_dest = nest_2_mover.get(dd);
   if ((mover_src || mover_dest)) {
     if (mover_src && mover_dest) {
-      if (mover_src[0] === mover_dest[0]) {
-        return mover_src[0];
+      const intersection = intersect(mover_src, mover_dest);
+      if (intersection.length === 1) {
+        return intersection[0];
       }
       else {
         throw Error(`Mover not found for src: ${src_nest} and dest: ${dest_nest}\n src_mover: ${mover_src} \n dest_mover: ${mover_dest}`)
