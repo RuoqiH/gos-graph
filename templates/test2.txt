@@ -30,3 +30,22 @@ proc move_plate {
   move sf2-preamp-a-rts-2b-2-1 sf2-preamp-a-rts-2b-2-16
 
 }
+
+proc move_plate {
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-1-1
+  move sf2-postamp-a-t5e_sln-tip-1-1 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-1-2
+  move sf2-postamp-a-t5e_sln-tip-1-2 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-1-3
+  move sf2-postamp-a-t5e_sln-tip-1-3 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-2-1
+  move sf2-postamp-a-t5e_sln-tip-2-1 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-2-2
+  move sf2-postamp-a-t5e_sln-tip-2-2 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-2-3
+  move sf2-postamp-a-t5e_sln-tip-2-3 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-3-1
+  move sf2-postamp-a-t5e_sln-tip-3-1 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-t5e_sln-tip-3-2
+  move sf2-postamp-a-t5e_sln-tip-3-2 sf2-postamp-a-transfer-tip-1-1
+}

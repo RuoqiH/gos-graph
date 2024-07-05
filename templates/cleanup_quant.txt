@@ -1,0 +1,72 @@
+choice SS_NEST1 = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]  # ss -> vspin
+choice SS_NEST2 = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]  # plateloc -> ss
+
+proc m200_door {
+  lock sf2-postamp-a-m200-1
+
+  run sf2-postamp-a-m200-1 open_tray
+  barrier ready_to_load_m200
+
+  barrier ready_to_close_m200
+  run sf2-postamp-a-m200-1 close_tray
+
+  unlock sf2-postamp-a-m200-1
+}
+
+proc vspin_loading {
+  lock sf2-postamp-a-vspin-1
+  move sf2-postamp-a-balancer-1-4 sf2-postamp-a-vspin-1_nest
+  run sf2-postamp-a-vspin-1 load_plate nest=2 plate_type=DTS_Post_Greiner96_Plate
+  barrier vspin_ready_to_load
+
+  barrier vspin_ready_to_unload
+  run sf2-postamp-a-vspin-1 unload_plate nest=2 plate_type=DTS_Post_Greiner96_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-balancer-1-4
+  unlock sf2-postamp-a-vspin-1
+}
+
+proc run {
+  lock <%SS_NEST1%>
+  lock sf2-postamp-a-steristore-1
+
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_ICL_TEST_1 to_nest=<%SS_NEST1%>
+  unlock sf2-postamp-a-steristore-1
+
+  barrier vspin_ready_to_load
+
+  move <%SS_NEST1%> sf2-postamp-a-vspin-1_nest barcode=DTS_ICL_TEST_1
+  unlock <%SS_NEST1%>
+  run sf2-postamp-a-vspin-1 load_plate nest=1 plate_type=DTS_Post_Greiner96_Plate
+  run sf2-postamp-a-vspin-1 spin_cycle !json{"duration":15,"bucket_num":1,"rpm":1500,"accel_percent":100,"decel_percent":100,"barcodes":["DTS_ICL_TEST_1"]}
+  run sf2-postamp-a-vspin-1 unload_plate nest=1 plate_type=DTS_Post_Greiner96_Plate
+
+  lock sf2-postamp-a-xpeel-1
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_ICL_TEST_1
+  barrier vspin_ready_to_unload
+
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=DTS_Post_Greiner96_Plate barcode=DTS_ICL_TEST_1
+
+  move sf2-postamp-a-xpeel-1_nest sf2-postamp-a-m200-1_nest barcode=DTS_ICL_TEST_1
+  unlock sf2-postamp-a-xpeel-1
+
+  run sf2-postamp-a-m200-1 close_tray
+  run sf2-postamp-a-m200-1 dts_index_pcr_cleanup_quant barcode=DTS_ICL_TEST_1 upload=True pipeline_job_id=1
+  run sf2-postamp-a-m200-1 open_tray
+
+  lock sf2-postamp-a-plateloc-1
+  move sf2-postamp-a-m200-1_nest sf2-postamp-a-plateloc-1_nest barcode=DTS_ICL_TEST_1
+
+  barrier ready_to_close_m200
+
+  run sf2-postamp-a-plateloc-1 seal_plate barcode=DTS_ICL_TEST_1 temp=160 time=2.0
+
+  lock <%SS_NEST2%>
+  move sf2-postamp-a-plateloc-1_nest <%SS_NEST2%> barcode=DTS_ICL_TEST_1
+  unlock sf2-postamp-a-plateloc-1
+
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 place barcode=DTS_ICL_TEST_1 from_nest=<%SS_NEST2%> stacker_type=STORAGE
+  unlock sf2-postamp-a-steristore-1
+
+  unlock <%SS_NEST2%>
+}

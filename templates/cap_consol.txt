@@ -1,0 +1,391 @@
+# set hybridization barcode
+
+choice T5 = [sf2-postamp-a-t5e]
+
+choice bioshake = [sf2-postamp-a-bioshake-1, sf2-postamp-a-bioshake-2, sf2-postamp-a-bioshake-3]
+
+choice SS_NEST_HYB = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]
+choice SS_NEST_WRK = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]
+choice SS_NEST = [nest-1, nest-2]
+
+choice TRANSFER_A_0 = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+choice TRANSFER_A_1 = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+choice TRANSFER_A_3 = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+choice TRANSFER_A_4 = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+choice TRANSFER_A_5 = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+choice TRANSFER_A_7 = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+
+# Run capture consolidation on T5
+proc run {
+  barrier tecan_acquired
+
+  # Loading
+
+  barrier before_run
+
+
+  barrier after_run
+
+  # Unloading
+
+  barrier tecan_released
+}
+
+# 200uL tips: microserve -> T5 -> microserve
+proc tip_loading {
+  barrier tecan_acquired
+
+  lock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-microserve-1 unload_labware labware_type_name=96_200uL_Tips_Box
+  lock sf2-postamp-a-transfer-tip-1-1
+  lock sf2-postamp-a-delidder-1
+  lock sf2-postamp-a-mover-1
+  run sf2-postamp-a-mover-1 fetch_hold_plate src=sf2-postamp-a-microserve-1_nest-tip dest=sf2-postamp-a-delidder-1
+  unlock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-delidder-1 hold
+  run sf2-postamp-a-mover-1 deposit_plate dest=sf2-postamp-a-transfer-tip-1-1
+  unlock sf2-postamp-a-mover-1
+  run sf2-postamp-a-delidder-1 release
+  unlock sf2-postamp-a-delidder-1
+  barrier ready_to_load_hyb
+  move sf2-postamp-a-transfer-tip-1-1 <%T5%>_sln-tip-1-3
+  unlock sf2-postamp-a-transfer-tip-1-1
+  barrier tip_loaded
+
+  barrier before_run
+  # Tecan running
+  barrier after_run
+
+  lock sf2-postamp-a-transfer-tip-1-1
+  lock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-microserve-1 load_labware labware_type_name=96_200uL_Tips_Box_Partial
+  move <%T5%>_sln-tip-1-3 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-microserve-1_nest-tip
+  unlock sf2-postamp-a-microserve-1
+  unlock sf2-postamp-a-transfer-tip-1-1
+
+  barrier tecan_released
+}
+
+# Hyb capture plate: microserve -> T5 -> steristore
+proc hyb_loading {
+  barrier ready_to_load_hyb
+
+  lock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-microserve-1 unload_labware labware_type_name=Eppendorf_Plate
+  lock sf2-postamp-a-labeling-1
+  move sf2-postamp-a-microserve-1_nest sf2-postamp-a-labeling-1_nest
+  unlock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-labeling-1 print_and_apply_barcode barcode=DTS_HCP_TEST1
+  barrier tip_loaded
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_0%>
+
+  move sf2-postamp-a-labeling-1_nest <%TRANSFER_A_0%> barcode=DTS_HCP_TEST1
+
+  unlock sf2-postamp-a-labeling-1
+
+  barrier ready_to_load_work
+
+  move <%TRANSFER_A_0%> <%T5%>_sln-1-1 barcode=DTS_HCP_TEST1
+
+  unlock <%TRANSFER_A_0%>
+
+  barrier hyb_loaded
+
+  barrier before_run
+  # Tecan running
+  barrier after_run
+
+  lock sf2-postamp-a-plateloc-1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_1%>
+
+  move <%T5%>_sln-1-1 <%TRANSFER_A_1%> barcode=DTS_HCP_TEST1
+
+  move <%TRANSFER_A_1%> sf2-postamp-a-plateloc-1_nest barcode=DTS_HCP_TEST1
+
+  unlock <%TRANSFER_A_1%>
+
+  run sf2-postamp-a-plateloc-1 seal_plate barcode=DTS_HCP_TEST1 temp=160 time=2.0
+  lock <%SS_NEST_HYB%>
+  move sf2-postamp-a-plateloc-1_nest <%SS_NEST_HYB%> barcode=DTS_HCP_TEST1
+  unlock sf2-postamp-a-plateloc-1
+  barrier ready_to_unload_other
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 place barcode=DTS_HCP_TEST1 from_nest=<%SS_NEST_HYB%> stacker_type=STORAGE
+  unlock sf2-postamp-a-steristore-1
+  unlock <%SS_NEST_HYB%>
+  barrier tecan_released
+}
+
+proc vspin_work_load {
+  barrier ready_to_load_work
+  lock sf2-postamp-a-vspin-1
+  move sf2-postamp-a-balancer-1-1 sf2-postamp-a-vspin-1_nest
+  run sf2-postamp-a-vspin-1 load_plate nest=2 plate_type=COSTAR_Plate
+
+  barrier ready_to_load_work_vspin
+  barrier ready_to_unload_work_vspin
+
+  run sf2-postamp-a-vspin-1 unload_plate nest=2 plate_type=COSTAR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-balancer-1-1
+  unlock sf2-postamp-a-vspin-1
+}
+
+# Work plate: steristore -> T5 -> trash
+proc work_loading {
+  barrier ready_to_load_work
+
+  lock <%SS_NEST_WRK%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_COW_TEST1 to_nest=<%SS_NEST_WRK%>
+  unlock sf2-postamp-a-steristore-1
+  lock <%bioshake%>
+  run <%bioshake%> force_unlock
+
+  # direct move
+
+  move <%SS_NEST_WRK%> <%bioshake%>_nest barcode=DTS_COW_TEST1
+
+  unlock <%SS_NEST_WRK%>
+
+  run <%bioshake%> shake_constant_speed duration=60 speed=2000 barcode=DTS_COW_TEST1
+  barrier ready_to_load_work_vspin
+  move <%bioshake%>_nest sf2-postamp-a-vspin-1_nest barcode=DTS_COW_TEST1
+  unlock <%bioshake%>
+  run sf2-postamp-a-vspin-1 load_plate nest=1 plate_type=COSTAR_Plate
+  run sf2-postamp-a-vspin-1 spin_cycle !json{"duration":5,"bucket_num":1,"rpm":1400,"accel_percent":100,"decel_percent":100,"barcodes":["DTS_COW_TEST1"]}
+  lock sf2-postamp-a-xpeel-1
+  run sf2-postamp-a-vspin-1 unload_plate nest=1 plate_type=COSTAR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_COW_TEST1
+  barrier ready_to_unload_work_vspin
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=COSTAR_Plate barcode=DTS_COW_TEST1
+
+  barrier hyb_loaded
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_3%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A_3%> barcode=DTS_COW_TEST1
+
+  unlock sf2-postamp-a-xpeel-1
+
+  barrier ready_to_load_consol
+
+  move <%TRANSFER_A_3%> <%T5%>_sln-1-2 barcode=DTS_COW_TEST1
+
+  unlock <%TRANSFER_A_3%>
+
+  barrier wrk_loaded
+
+  barrier before_run
+  # Tecan running
+  barrier after_run
+
+  # TODO: determine trash location
+  barrier ready_to_unload_other
+  lock sf2-postamp-a-plateloc-1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_4%>
+
+  move <%T5%>_sln-1-2 <%TRANSFER_A_4%> barcode=DTS_COW_TEST1
+
+  move <%TRANSFER_A_4%> sf2-postamp-a-plateloc-1_nest barcode=DTS_COW_TEST1
+
+  unlock <%TRANSFER_A_4%>
+
+  run sf2-postamp-a-plateloc-1 seal_plate barcode=DTS_COW_TEST1 temp=160 time=2.5
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_5%>
+
+  move sf2-postamp-a-plateloc-1_nest <%TRANSFER_A_5%> barcode=DTS_COW_TEST1
+
+  move <%TRANSFER_A_5%> sf2-postamp-a-trash-2-1 barcode=DTS_COW_TEST1
+
+  unlock <%TRANSFER_A_5%>
+
+  unlock sf2-postamp-a-plateloc-1
+  barrier tecan_released
+}
+
+# Index consol plate: steristore -> T5 -> trash
+proc consol_loading {
+  barrier ready_to_load_consol
+
+  lock sf2-postamp-a-vspin-1
+
+  lock sf2-postamp-a-steristore-1_<%SS_NEST%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_ICP_TEST1 to_nest=sf2-postamp-a-steristore-1_<%SS_NEST%>
+  unlock sf2-postamp-a-steristore-1
+  lock <%bioshake%>
+
+  # direct move
+
+  move sf2-postamp-a-steristore-1_<%SS_NEST%> <%bioshake%>_nest barcode=DTS_ICP_TEST1
+
+  unlock sf2-postamp-a-steristore-1_<%SS_NEST%>
+
+  run <%bioshake%> shake_constant_speed duration=60 speed=2000 barcode=DTS_ICP_TEST1
+  run <%bioshake%> force_unlock
+  move <%bioshake%>_nest sf2-postamp-a-vspin-1_nest barcode=DTS_ICP_TEST1
+  run sf2-postamp-a-vspin-1 load_plate nest=1 plate_type=COSTAR_Plate
+  unlock <%bioshake%>
+
+  lock sf2-postamp-a-steristore-1_<%SS_NEST%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_ICP_TEST2 to_nest=sf2-postamp-a-steristore-1_<%SS_NEST%>
+  unlock sf2-postamp-a-steristore-1
+  lock <%bioshake%>
+
+  # direct move
+
+  move sf2-postamp-a-steristore-1_<%SS_NEST%> <%bioshake%>_nest barcode=DTS_ICP_TEST2
+
+  unlock sf2-postamp-a-steristore-1_<%SS_NEST%>
+
+  run <%bioshake%> shake_constant_speed duration=60 speed=2000 barcode=DTS_ICP_TEST2
+  run <%bioshake%> force_unlock
+  move <%bioshake%>_nest sf2-postamp-a-vspin-1_nest barcode=DTS_ICP_TEST2
+  run sf2-postamp-a-vspin-1 load_plate nest=2 plate_type=COSTAR_Plate
+  unlock <%bioshake%>
+
+  run sf2-postamp-a-vspin-1 spin_cycle !json{"duration":15,"bucket_num":1,"rpm":1400,"accel_percent":100,"decel_percent":100,"barcodes":["DTS_ICP_TEST1", "DTS_ICP_TEST2"]}
+
+  lock sf2-postamp-a-xpeel-1
+  run sf2-postamp-a-vspin-1 unload_plate nest=1 plate_type=COSTAR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_ICP_TEST1
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=COSTAR_Plate barcode=DTS_ICP_TEST1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_7%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A_7%> barcode=DTS_ICP_TEST1
+
+  unlock sf2-postamp-a-xpeel-1
+
+  move <%TRANSFER_A_7%> <%T5%>_sln-2-1 barcode=DTS_ICP_TEST1
+
+  unlock <%TRANSFER_A_7%>
+
+  lock sf2-postamp-a-xpeel-1
+  run sf2-postamp-a-vspin-1 unload_plate nest=2 plate_type=COSTAR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_ICP_TEST2
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=COSTAR_Plate barcode=DTS_ICP_TEST2
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_7%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A_7%> barcode=DTS_ICP_TEST2
+
+  unlock sf2-postamp-a-xpeel-1
+
+  move <%TRANSFER_A_7%> <%T5%>_sln-2-2 barcode=DTS_ICP_TEST2
+
+  unlock <%TRANSFER_A_7%>
+
+  unlock sf2-postamp-a-vspin-1
+
+  lock sf2-postamp-a-vspin-1
+
+  lock sf2-postamp-a-steristore-1_<%SS_NEST%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_ICP_TEST3 to_nest=sf2-postamp-a-steristore-1_<%SS_NEST%>
+  unlock sf2-postamp-a-steristore-1
+  lock <%bioshake%>
+
+  # direct move
+
+  move sf2-postamp-a-steristore-1_<%SS_NEST%> <%bioshake%>_nest barcode=DTS_ICP_TEST3
+
+  unlock sf2-postamp-a-steristore-1_<%SS_NEST%>
+
+  run <%bioshake%> shake_constant_speed duration=60 speed=2000 barcode=DTS_ICP_TEST3
+  run <%bioshake%> force_unlock
+  move <%bioshake%>_nest sf2-postamp-a-vspin-1_nest barcode=DTS_ICP_TEST3
+  run sf2-postamp-a-vspin-1 load_plate nest=1 plate_type=COSTAR_Plate
+  unlock <%bioshake%>
+
+  lock sf2-postamp-a-steristore-1_<%SS_NEST%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_ICP_TEST4 to_nest=sf2-postamp-a-steristore-1_<%SS_NEST%>
+  unlock sf2-postamp-a-steristore-1
+  lock <%bioshake%>
+
+  # direct move
+
+  move sf2-postamp-a-steristore-1_<%SS_NEST%> <%bioshake%>_nest barcode=DTS_ICP_TEST4
+
+  unlock sf2-postamp-a-steristore-1_<%SS_NEST%>
+
+  run <%bioshake%> shake_constant_speed duration=60 speed=2000 barcode=DTS_ICP_TEST4
+  run <%bioshake%> force_unlock
+  move <%bioshake%>_nest sf2-postamp-a-vspin-1_nest barcode=DTS_ICP_TEST4
+  run sf2-postamp-a-vspin-1 load_plate nest=2 plate_type=COSTAR_Plate
+  unlock <%bioshake%>
+
+  run sf2-postamp-a-vspin-1 spin_cycle !json{"duration":15,"bucket_num":1,"rpm":1400,"accel_percent":100,"decel_percent":100,"barcodes":["DTS_ICP_TEST3", "DTS_ICP_TEST4"]}
+
+  lock sf2-postamp-a-xpeel-1
+  run sf2-postamp-a-vspin-1 unload_plate nest=1 plate_type=COSTAR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_ICP_TEST3
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=COSTAR_Plate barcode=DTS_ICP_TEST3
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_7%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A_7%> barcode=DTS_ICP_TEST3
+
+  unlock sf2-postamp-a-xpeel-1
+
+  move <%TRANSFER_A_7%> <%T5%>_sln-3-1 barcode=DTS_ICP_TEST3
+
+  unlock <%TRANSFER_A_7%>
+
+  lock sf2-postamp-a-xpeel-1
+  run sf2-postamp-a-vspin-1 unload_plate nest=2 plate_type=COSTAR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_ICP_TEST4
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=COSTAR_Plate barcode=DTS_ICP_TEST4
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A_7%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A_7%> barcode=DTS_ICP_TEST4
+
+  unlock sf2-postamp-a-xpeel-1
+
+  move <%TRANSFER_A_7%> <%T5%>_sln-3-2 barcode=DTS_ICP_TEST4
+
+  unlock <%TRANSFER_A_7%>
+
+  unlock sf2-postamp-a-vspin-1
+
+  barrier before_run
+  # Tecan running
+  barrier after_run
+  barrier ready_to_unload_other
+
+  move <%T5%>_sln-2-1 sf2-postamp-a-trash-1-1 barcode=DTS_ICP_TEST1
+
+  move <%T5%>_sln-2-2 sf2-postamp-a-trash-1-1 barcode=DTS_ICP_TEST2
+
+  move <%T5%>_sln-3-1 sf2-postamp-a-trash-1-1 barcode=DTS_ICP_TEST3
+
+  move <%T5%>_sln-3-2 sf2-postamp-a-trash-1-1 barcode=DTS_ICP_TEST4
+
+  barrier tecan_released
+}

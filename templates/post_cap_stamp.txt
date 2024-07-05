@@ -1,0 +1,175 @@
+choice T5 = [sf2-postamp-a-t5e]
+
+choice SS_NEST_HCP = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]
+choice SS_NEST_SMM = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]
+choice SS_NEST_OUT = [sf2-postamp-a-steristore-1_nest-1, sf2-postamp-a-steristore-1_nest-2]
+
+choice TRANSFER_A = [ sf2-postamp-a-transfer-1-2, sf2-postamp-a-transfer-1-3, sf2-postamp-a-transfer-1-4, sf2-postamp-a-transfer-1-5, sf2-postamp-a-transfer-1-6, sf2-postamp-a-transfer-1-7, sf2-postamp-a-transfer-1-8, sf2-postamp-a-transfer-1-9, sf2-postamp-a-transfer-1-10 ]
+
+# TODO: add tip loc as params
+proc run_protocol {
+  barrier tecan_acquired
+  barrier before_run
+
+
+  barrier after_run
+  barrier tecan_released
+}
+
+proc lock_vspin {
+  barrier tip_loaded
+  lock sf2-postamp-a-vspin-1
+  barrier vspin_acquired
+  barrier vspin_released
+  unlock sf2-postamp-a-vspin-1
+}
+
+proc lock_xpeel {
+  barrier xpeel_needed
+  lock sf2-postamp-a-xpeel-1
+  barrier xpeel_acquired
+  barrier xpeel_released
+  unlock sf2-postamp-a-xpeel-1
+}
+
+proc load_plates {
+  barrier vspin_acquired
+  # Move smm plate to vspin
+  lock <%SS_NEST_SMM%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_SMM_TEST_1 to_nest=<%SS_NEST_SMM%>
+  unlock sf2-postamp-a-steristore-1
+
+  # direct move
+
+  move <%SS_NEST_SMM%> sf2-postamp-a-vspin-1_nest barcode=DTS_SMM_TEST_1
+
+  unlock <%SS_NEST_SMM%>
+
+  run sf2-postamp-a-vspin-1 load_plate nest=2 plate_type=DTS_PCR_Plate
+
+  # Move hcp plate to vspin
+  lock <%SS_NEST_HCP%>
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 pick barcode=DTS_HCP_TEST_1 to_nest=<%SS_NEST_HCP%>
+  unlock sf2-postamp-a-steristore-1
+
+  # direct move
+
+  move <%SS_NEST_HCP%> sf2-postamp-a-vspin-1_nest barcode=DTS_HCP_TEST_1
+
+  unlock <%SS_NEST_HCP%>
+
+  run sf2-postamp-a-vspin-1 load_plate nest=1 plate_type=DTS_PCR_Plate
+
+  # Spin plates
+  run sf2-postamp-a-vspin-1 spin_cycle !json{"duration":15,"bucket_num":1,"rpm":1500,"accel_percent":100,"decel_percent":100,"barcodes":["DTS_HCP_TEST_1", "DTS_SMM_TEST_1"]}
+
+  barrier xpeel_needed
+  barrier xpeel_acquired
+
+  # Peel smm plate and load to tecan
+  run sf2-postamp-a-vspin-1 unload_plate nest=2 plate_type=DTS_PCR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_SMM_TEST_1
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=DTS_PCR_Plate barcode=DTS_SMM_TEST_1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A%> barcode=DTS_SMM_TEST_1
+
+  barrier ready_to_move_hcp
+
+  move <%TRANSFER_A%> <%T5%>_sln-1-2 barcode=DTS_SMM_TEST_1
+
+  unlock <%TRANSFER_A%>
+
+  barrier ready_to_trash_smm
+  # Trash the smm plate
+  move <%T5%>_sln-1-2 sf2-postamp-a-trash-1-1 barcode=DTS_SMM_TEST_1
+  barrier tecan_released
+}
+
+proc hcp_to_tecan {
+  barrier ready_to_move_hcp
+  run sf2-postamp-a-vspin-1 unload_plate nest=1 plate_type=DTS_PCR_Plate
+  move sf2-postamp-a-vspin-1_nest sf2-postamp-a-xpeel-1_nest barcode=DTS_HCP_TEST_1
+  barrier vspin_released
+  run sf2-postamp-a-xpeel-1 xpeel_labware plate_type=DTS_PCR_Plate barcode=DTS_HCP_TEST_1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A%>
+
+  move sf2-postamp-a-xpeel-1_nest <%TRANSFER_A%> barcode=DTS_HCP_TEST_1
+
+  barrier xpeel_released
+
+  move <%TRANSFER_A%> <%T5%>_sln-1-1 barcode=DTS_HCP_TEST_1
+
+  unlock <%TRANSFER_A%>
+
+  barrier before_run
+  barrier after_run
+
+  # Seal and store hcp plate
+  lock sf2-postamp-a-plateloc-1
+
+  # same side move with transfer nest
+
+  lock <%TRANSFER_A%>
+
+  move <%T5%>_sln-1-1 <%TRANSFER_A%> barcode=DTS_HCP_TEST_1
+
+  barrier ready_to_trash_smm
+
+  move <%TRANSFER_A%> sf2-postamp-a-plateloc-1_nest barcode=DTS_HCP_TEST_1
+
+  unlock <%TRANSFER_A%>
+
+  run sf2-postamp-a-plateloc-1 seal_plate barcode=DTS_HCP_TEST_1 temp=160 time=2.0
+  lock <%SS_NEST_OUT%>
+  move sf2-postamp-a-plateloc-1_nest <%SS_NEST_OUT%> barcode=DTS_HCP_TEST_1
+
+  unlock sf2-postamp-a-plateloc-1
+  lock sf2-postamp-a-steristore-1
+  run sf2-postamp-a-steristore-1 place barcode=DTS_HCP_TEST_1 from_nest=<%SS_NEST_OUT%> stacker_type=STORAGE
+  unlock sf2-postamp-a-steristore-1
+  unlock <%SS_NEST_OUT%>
+
+}
+
+# TODO: add lock to slns
+proc load_tips {
+  barrier tecan_acquired
+
+  lock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-microserve-1 unload_labware labware_type_name=96_200uL_Tips_Box
+  lock sf2-postamp-a-transfer-tip-1-1
+  lock sf2-postamp-a-delidder-1
+  lock sf2-postamp-a-mover-1
+  run sf2-postamp-a-mover-1 fetch_hold_plate src=sf2-postamp-a-microserve-1_nest-tip dest=sf2-postamp-a-delidder-1
+  unlock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-delidder-1 hold
+  run sf2-postamp-a-mover-1 deposit_plate dest=sf2-postamp-a-transfer-tip-1-1
+  unlock sf2-postamp-a-mover-1
+  run sf2-postamp-a-delidder-1 release
+  unlock sf2-postamp-a-delidder-1
+  move sf2-postamp-a-transfer-tip-1-1 <%T5%>_sln-tip-1-3
+  unlock sf2-postamp-a-transfer-tip-1-1
+  barrier tip_loaded
+
+  barrier before_run
+  # Tecan running
+  barrier after_run
+
+  lock sf2-postamp-a-microserve-1
+  run sf2-postamp-a-microserve-1 load_labware labware_type_name=96_200uL_Tips_Box_Partial
+  lock sf2-postamp-a-transfer-tip-1-1
+  move <%T5%>_sln-tip-1-3 sf2-postamp-a-transfer-tip-1-1
+  move sf2-postamp-a-transfer-tip-1-1 sf2-postamp-a-microserve-1_nest-tip
+  unlock sf2-postamp-a-transfer-tip-1-1
+  unlock sf2-postamp-a-microserve-1
+  barrier tecan_released
+}

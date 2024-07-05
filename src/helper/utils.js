@@ -334,7 +334,7 @@ export const parse_gos_to_timeline = (content) => {
     }
     finish_time_map.set(node_name, finish_time);
   }
-  if (finished != gg.get_total()) {
+  if (finished !== gg.get_total()) {
     throw Error("There is a cycle");
   }
   const result = {};

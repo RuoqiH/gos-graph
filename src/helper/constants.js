@@ -746,214 +746,215 @@ export const devices = [
 export const movers =
   [
     {
-      "name": "sf2-postamp-a-mover-1",
-      "params": {},
-      "move_graph": {
-        "sf2-postamp-a-mover-1": [
-          "sf2-postamp-a-balancer-1-1",
-          "sf2-postamp-a-balancer-1-2",
-          "sf2-postamp-a-balancer-1-3",
-          "sf2-postamp-a-balancer-1-4",
-          "sf2-postamp-a-balancer-1-5",
-          "sf2-postamp-a-balancer-1-6",
-          "sf2-postamp-a-bioshake-1_nest",
-          "sf2-postamp-a-bioshake-2_nest",
-          "sf2-postamp-a-bioshake-3_nest",
-          "sf2-postamp-a-bioshake-4_nest",
-          "sf2-postamp-a-delidder-1",
-          "sf2-postamp-a-io-1_input-1",
-          "sf2-postamp-a-io-1_input-2",
-          "sf2-postamp-a-io-1_input-3",
-          "sf2-postamp-a-io-1_input-4",
-          "sf2-postamp-a-io-1_input-5",
-          "sf2-postamp-a-io-1_output-1",
-          "sf2-postamp-a-io-1_output-2",
-          "sf2-postamp-a-io-1_output-3",
-          "sf2-postamp-a-io-1_output-4",
-          "sf2-postamp-a-io-1_output-5",
-          "SF2-POSTAMP-A-IO-1_SCAN",
-          "sf2-postamp-a-labeling-1_nest",
-          "sf2-postamp-a-m200-1_nest",
-          "sf2-postamp-a-m200-hold-nest",
-          "sf2-postamp-a-microserve-1_nest",
-          "sf2-postamp-a-plateloc-1_nest",
-          "sf2-postamp-a-slide-1_sf2-postamp-a-mover-1",
-          "sf2-postamp-a-slide-2_sf2-postamp-a-mover-1",
-          "sf2-postamp-a-steristore-1_nest-1",
-          "sf2-postamp-a-steristore-1_nest-2",
-          "SF2-POSTAMP-A-TRANSFER",
-          "sf2-postamp-a-vspin-1_nest",
-          "sf2-postamp-a-xpeel-1_nest"
-        ]
-      }
+        "name": "sf2-postamp-a-mover-1",
+        "params": {},
+        "move_graph": {
+            "sf2-postamp-a-mover-1": [
+                "sf2-postamp-a-balancer-1-1",
+                "sf2-postamp-a-balancer-1-2",
+                "sf2-postamp-a-balancer-1-3",
+                "sf2-postamp-a-balancer-1-4",
+                "sf2-postamp-a-balancer-1-5",
+                "sf2-postamp-a-balancer-1-6",
+                "sf2-postamp-a-bioshake-1_nest",
+                "sf2-postamp-a-bioshake-2_nest",
+                "sf2-postamp-a-bioshake-3_nest",
+                "sf2-postamp-a-bioshake-4_nest",
+                "sf2-postamp-a-delidder-1",
+                "sf2-postamp-a-io-1_input-1",
+                "sf2-postamp-a-io-1_input-2",
+                "sf2-postamp-a-io-1_input-3",
+                "sf2-postamp-a-io-1_input-4",
+                "sf2-postamp-a-io-1_input-5",
+                "sf2-postamp-a-io-1_output-1",
+                "sf2-postamp-a-io-1_output-2",
+                "sf2-postamp-a-io-1_output-3",
+                "sf2-postamp-a-io-1_output-4",
+                "sf2-postamp-a-io-1_output-5",
+                "SF2-POSTAMP-A-IO-1_SCAN",
+                "sf2-postamp-a-labeling-1_nest",
+                "sf2-postamp-a-m200-1_nest",
+                "sf2-postamp-a-m200-hold-nest",
+                "sf2-postamp-a-microserve-1_nest",
+                "sf2-postamp-a-microserve-1_nest-tip",
+                "sf2-postamp-a-plateloc-1_nest",
+                "sf2-postamp-a-slide-1_sf2-postamp-a-mover-1",
+                "sf2-postamp-a-slide-2_sf2-postamp-a-mover-1",
+                "sf2-postamp-a-steristore-1_nest-1",
+                "sf2-postamp-a-steristore-1_nest-2",
+                "SF2-POSTAMP-A-TRANSFER",
+                "sf2-postamp-a-vspin-1_nest",
+                "sf2-postamp-a-xpeel-1_nest"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-a-mover-2",
-      "params": {},
-      "move_graph": {
-        "sf2-postamp-a-mover-2": [
-          "sf2-postamp-a-platescanner-1_nest",
-          "SF2-POSTAMP-A-T5E",
-          "SF2-POSTAMP-A-T5C",
-          "SF2-POSTAMP-A-T10D",
-          "sf2-postamp-a-bioshake-4_nest",
-          "sf2-postamp-a-odtc-1",
-          "sf2-postamp-a-odtc-2",
-          "sf2-postamp-a-odtc-3",
-          "sf2-postamp-a-odtc-4",
-          "sf2-postamp-a-odtc-5",
-          "sf2-postamp-a-odtc-6",
-          "sf2-postamp-a-odtc-7",
-          "sf2-postamp-a-odtc-8",
-          "SF2-POSTAMP-A-TRANSFER",
-          "sf2-postamp-a-trash-1-1",
-          "sf2-postamp-a-trash-1-2",
-          "sf2-postamp-a-trash-1-3",
-          "sf2-postamp-a-trash-2-1",
-          "sf2-postamp-a-trash-2-2",
-          "sf2-postamp-a-trash-2-3",
-          "sf2-postamp-a-trash-3-1",
-          "sf2-postamp-a-trash-3-2",
-          "sf2-postamp-a-trash-3-3",
-          "sf2-postamp-a-trash-4-1",
-          "sf2-postamp-a-trash-4-2",
-          "sf2-postamp-a-trash-4-3",
-          "sf2-postamp-a-trash-5-1",
-          "sf2-postamp-a-trash-5-2",
-          "sf2-postamp-a-trash-5-3",
-          "sf2-postamp-a-trash-6-1",
-          "sf2-postamp-a-trash-6-2",
-          "sf2-postamp-a-trash-6-3"
-        ]
-      }
+        "name": "sf2-postamp-a-mover-2",
+        "params": {},
+        "move_graph": {
+            "sf2-postamp-a-mover-2": [
+                "sf2-postamp-a-platescanner-1_nest",
+                "SF2-POSTAMP-A-T5E",
+                "SF2-POSTAMP-A-T5C",
+                "SF2-POSTAMP-A-T10D",
+                "sf2-postamp-a-bioshake-4_nest",
+                "sf2-postamp-a-odtc-1",
+                "sf2-postamp-a-odtc-2",
+                "sf2-postamp-a-odtc-3",
+                "sf2-postamp-a-odtc-4",
+                "sf2-postamp-a-odtc-5",
+                "sf2-postamp-a-odtc-6",
+                "sf2-postamp-a-odtc-7",
+                "sf2-postamp-a-odtc-8",
+                "SF2-POSTAMP-A-TRANSFER",
+                "sf2-postamp-a-trash-1-1",
+                "sf2-postamp-a-trash-1-2",
+                "sf2-postamp-a-trash-1-3",
+                "sf2-postamp-a-trash-2-1",
+                "sf2-postamp-a-trash-2-2",
+                "sf2-postamp-a-trash-2-3",
+                "sf2-postamp-a-trash-3-1",
+                "sf2-postamp-a-trash-3-2",
+                "sf2-postamp-a-trash-3-3",
+                "sf2-postamp-a-trash-4-1",
+                "sf2-postamp-a-trash-4-2",
+                "sf2-postamp-a-trash-4-3",
+                "sf2-postamp-a-trash-5-1",
+                "sf2-postamp-a-trash-5-2",
+                "sf2-postamp-a-trash-5-3",
+                "sf2-postamp-a-trash-6-1",
+                "sf2-postamp-a-trash-6-2",
+                "sf2-postamp-a-trash-6-3"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-b-mover-1",
-      "params": {},
-      "move_graph": {
-        "sf2-postamp-b-mover-1": [
-          "sf2-postamp-b-balancer-1-1",
-          "sf2-postamp-b-balancer-1-2",
-          "sf2-postamp-b-balancer-1-3",
-          "sf2-postamp-b-balancer-1-4",
-          "sf2-postamp-b-balancer-1-5",
-          "sf2-postamp-b-balancer-1-6",
-          "sf2-postamp-b-bioshake-1_nest",
-          "sf2-postamp-b-bioshake-2_nest",
-          "sf2-postamp-b-bioshake-3_nest",
-          "sf2-postamp-b-delidder-1",
-          "sf2-postamp-b-io-1_input-1",
-          "sf2-postamp-b-io-1_input-2",
-          "sf2-postamp-b-io-1_input-3",
-          "sf2-postamp-b-io-1_input-4",
-          "sf2-postamp-b-io-1_input-5",
-          "sf2-postamp-b-io-1_output-1",
-          "sf2-postamp-b-io-1_output-2",
-          "sf2-postamp-b-io-1_output-3",
-          "sf2-postamp-b-io-1_output-4",
-          "sf2-postamp-b-io-1_output-5",
-          "SF2-POSTAMP-B-IO-1_SCAN",
-          "sf2-postamp-b-labeling-1_nest",
-          "sf2-postamp-b-m200-1_nest",
-          "sf2-postamp-b-m200-hold-nest",
-          "sf2-postamp-b-microserve-1_nest",
-          "sf2-postamp-b-plateloc-1_nest",
-          "sf2-postamp-a-slide-1_sf2-postamp-b-mover-1",
-          "sf2-postamp-a-slide-2_sf2-postamp-b-mover-1",
-          "sf2-postamp-b-steristore-1_nest-1",
-          "sf2-postamp-b-steristore-1_nest-2",
-          "SF2-POSTAMP-B-TRANSFER",
-          "sf2-postamp-b-vspin-1_nest",
-          "sf2-postamp-b-xpeel-1_nest"
-        ]
-      }
+        "name": "sf2-postamp-b-mover-1",
+        "params": {},
+        "move_graph": {
+            "sf2-postamp-b-mover-1": [
+                "sf2-postamp-b-balancer-1-1",
+                "sf2-postamp-b-balancer-1-2",
+                "sf2-postamp-b-balancer-1-3",
+                "sf2-postamp-b-balancer-1-4",
+                "sf2-postamp-b-balancer-1-5",
+                "sf2-postamp-b-balancer-1-6",
+                "sf2-postamp-b-bioshake-1_nest",
+                "sf2-postamp-b-bioshake-2_nest",
+                "sf2-postamp-b-bioshake-3_nest",
+                "sf2-postamp-b-delidder-1",
+                "sf2-postamp-b-io-1_input-1",
+                "sf2-postamp-b-io-1_input-2",
+                "sf2-postamp-b-io-1_input-3",
+                "sf2-postamp-b-io-1_input-4",
+                "sf2-postamp-b-io-1_input-5",
+                "sf2-postamp-b-io-1_output-1",
+                "sf2-postamp-b-io-1_output-2",
+                "sf2-postamp-b-io-1_output-3",
+                "sf2-postamp-b-io-1_output-4",
+                "sf2-postamp-b-io-1_output-5",
+                "SF2-POSTAMP-B-IO-1_SCAN",
+                "sf2-postamp-b-labeling-1_nest",
+                "sf2-postamp-b-m200-1_nest",
+                "sf2-postamp-b-m200-hold-nest",
+                "sf2-postamp-b-microserve-1_nest",
+                "sf2-postamp-b-plateloc-1_nest",
+                "sf2-postamp-a-slide-1_sf2-postamp-b-mover-1",
+                "sf2-postamp-a-slide-2_sf2-postamp-b-mover-1",
+                "sf2-postamp-b-steristore-1_nest-1",
+                "sf2-postamp-b-steristore-1_nest-2",
+                "SF2-POSTAMP-B-TRANSFER",
+                "sf2-postamp-b-vspin-1_nest",
+                "sf2-postamp-b-xpeel-1_nest"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-b-mover-2",
-      "params": {},
-      "move_graph": {
-        "sf2-postamp-b-mover-2": [
-          "sf2-postamp-b-platescanner-1_nest",
-          "SF2-POSTAMP-B-T101",
-          "SF2-POSTAMP-B-T102",
-          "SF2-POSTAMP-B-TRANSFER",
-          "sf2-postamp-b-trash-1-1",
-          "sf2-postamp-b-trash-1-2",
-          "sf2-postamp-b-trash-1-3"
-        ]
-      }
+        "name": "sf2-postamp-b-mover-2",
+        "params": {},
+        "move_graph": {
+            "sf2-postamp-b-mover-2": [
+                "sf2-postamp-b-platescanner-1_nest",
+                "SF2-POSTAMP-B-T101",
+                "SF2-POSTAMP-B-T102",
+                "SF2-POSTAMP-B-TRANSFER",
+                "sf2-postamp-b-trash-1-1",
+                "sf2-postamp-b-trash-1-2",
+                "sf2-postamp-b-trash-1-3"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-a-microserve-1",
-      "params": {
-        "nest_name": "sf2-postamp-a-microserve-1_nest",
-        "internal_name": "sf2-postamp-a-microserve-1"
-      },
-      "move_graph": {
-        "sf2-postamp-a-microserve-1": [
-          "sf2-postamp-a-microserve-1",
-          "sf2-postamp-a-microserve-1_nest"
-        ]
-      }
+        "name": "sf2-postamp-a-microserve-1",
+        "params": {
+            "nest_name": "sf2-postamp-a-microserve-1_nest",
+            "internal_name": "sf2-postamp-a-microserve-1"
+        },
+        "move_graph": {
+            "sf2-postamp-a-microserve-1": [
+                "sf2-postamp-a-microserve-1",
+                "sf2-postamp-a-microserve-1_nest"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-b-microserve-1",
-      "params": {
-        "nest_name": "sf2-postamp-b-microserve-1_nest",
-        "internal_name": "sf2-postamp-b-microserve-1"
-      },
-      "move_graph": {
-        "sf2-postamp-b-microserve-1": [
-          "sf2-postamp-b-microserve-1",
-          "sf2-postamp-b-microserve-1_nest"
-        ]
-      }
+        "name": "sf2-postamp-b-microserve-1",
+        "params": {
+            "nest_name": "sf2-postamp-b-microserve-1_nest",
+            "internal_name": "sf2-postamp-b-microserve-1"
+        },
+        "move_graph": {
+            "sf2-postamp-b-microserve-1": [
+                "sf2-postamp-b-microserve-1",
+                "sf2-postamp-b-microserve-1_nest"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-a-steristore-1",
-      "params": {
-        "internal_location": "sf2-postamp-a-steristore-1",
-        "location_prefix": "sf2-postamp-a-steristore-1_nest-"
-      },
-      "move_graph": {
-        "sf2-postamp-a-steristore-1": []
-      }
+        "name": "sf2-postamp-a-steristore-1",
+        "params": {
+            "internal_location": "sf2-postamp-a-steristore-1",
+            "location_prefix": "sf2-postamp-a-steristore-1_nest-"
+        },
+        "move_graph": {
+            "sf2-postamp-a-steristore-1": []
+        }
     },
     {
-      "name": "sf2-postamp-b-steristore-1",
-      "params": {
-        "internal_location": "sf2-postamp-b-steristore-1",
-        "location_prefix": "sf2-postamp-b-steristore-1_nest-"
-      },
-      "move_graph": {
-        "sf2-postamp-b-steristore-1": []
-      }
+        "name": "sf2-postamp-b-steristore-1",
+        "params": {
+            "internal_location": "sf2-postamp-b-steristore-1",
+            "location_prefix": "sf2-postamp-b-steristore-1_nest-"
+        },
+        "move_graph": {
+            "sf2-postamp-b-steristore-1": []
+        }
     },
     {
-      "name": "sf2-postamp-a-vspin-1",
-      "params": {
-        "location_prefix": "sf2-postamp-a-vspin-1_"
-      },
-      "move_graph": {
-        "sf2-postamp-a-vspin-1": [
-          "sf2-postamp-a-vspin-1_nest",
-          "sf2-postamp-a-vspin-1_internal_1",
-          "sf2-postamp-a-vspin-1_internal_2"
-        ]
-      }
+        "name": "sf2-postamp-a-vspin-1",
+        "params": {
+            "location_prefix": "sf2-postamp-a-vspin-1_"
+        },
+        "move_graph": {
+            "sf2-postamp-a-vspin-1": [
+                "sf2-postamp-a-vspin-1_nest",
+                "sf2-postamp-a-vspin-1_internal_1",
+                "sf2-postamp-a-vspin-1_internal_2"
+            ]
+        }
     },
     {
-      "name": "sf2-postamp-b-vspin-1",
-      "params": {
-        "location_prefix": "sf2-postamp-b-vspin-1_"
-      },
-      "move_graph": {
-        "sf2-postamp-b-vspin-1": [
-          "sf2-postamp-b-vspin-1_nest",
-          "sf2-postamp-b-vspin-1_internal_1",
-          "sf2-postamp-b-vspin-1_internal_2"
-        ]
-      }
+        "name": "sf2-postamp-b-vspin-1",
+        "params": {
+            "location_prefix": "sf2-postamp-b-vspin-1_"
+        },
+        "move_graph": {
+            "sf2-postamp-b-vspin-1": [
+                "sf2-postamp-b-vspin-1_nest",
+                "sf2-postamp-b-vspin-1_internal_1",
+                "sf2-postamp-b-vspin-1_internal_2"
+            ]
+        }
     }
     ,
     {
@@ -1160,150 +1161,165 @@ export const movers =
   ]
 
 export const regions = {
-  "SF2-POSTAMP-A-IO-1_SCAN": {
-    "locations": [
-      "sf2-postamp-a-io-1_scan-nest"
-    ]
-  },
-  "SF2-POSTAMP-B-IO-1_SCAN": {
-    "locations": [
-      "sf2-postamp-b-io-1_scan-nest"
-    ]
-  },
-  "SF2-POSTAMP-A-STERISTORE-1": {
-    "locations": [
-      "sf2-postamp-a-steristore-1"
-    ]
-  },
-  "SF2-POSTAMP-B-STERISTORE-1": {
-    "locations": [
-      "sf2-postamp-b-steristore-1"
-    ]
-  },
-  "SF2-POSTAMP-A-STERISTORE-1_NESTS": {
-    "locations": [
-      "sf2-postamp-a-steristore-1_nest-1",
-      "sf2-postamp-a-steristore-1_nest-2"
-    ]
-  },
-  "SF2-POSTAMP-B-STERISTORE-1_NESTS": {
-    "locations": [
-      "sf2-postamp-b-steristore-1_nest-1",
-      "sf2-postamp-b-steristore-1_nest-2"
-    ]
-  },
-  "SF2-POSTAMP-A-T5E": {
-    "locations": [
-      "sf2-postamp-a-t5e_sln-1-1",
-      "sf2-postamp-a-t5e_sln-1-2",
-      "sf2-postamp-a-t5e_sln-1-3",
-      "sf2-postamp-a-t5e_sln-2-1",
-      "sf2-postamp-a-t5e_sln-2-2",
-      "sf2-postamp-a-t5e_sln-2-3",
-      "sf2-postamp-a-t5e_sln-3-1",
-      "sf2-postamp-a-t5e_sln-3-2",
-      "sf2-postamp-a-t5e_sln-3-3"
-    ]
-  },
-  "SF2-POSTAMP-A-T5C": {
-    "locations": [
-      "sf2-postamp-a-t5c_sln-1-1",
-      "sf2-postamp-a-t5c_sln-1-2",
-      "sf2-postamp-a-t5c_sln-1-3",
-      "sf2-postamp-a-t5c_sln-2-1",
-      "sf2-postamp-a-t5c_sln-2-2",
-      "sf2-postamp-a-t5c_sln-2-3",
-      "sf2-postamp-a-t5c_sln-3-1",
-      "sf2-postamp-a-t5c_sln-3-2",
-      "sf2-postamp-a-t5c_sln-3-3"
-    ]
-  },
-  "SF2-POSTAMP-A-T10D": {
-    "locations": [
-      "sf2-postamp-a-t10d_sln-1-1",
-      "sf2-postamp-a-t10d_sln-1-2",
-      "sf2-postamp-a-t10d_sln-1-3",
-      "sf2-postamp-a-t10d_sln-1-4",
-      "sf2-postamp-a-t10d_sln-1-5",
-      "sf2-postamp-a-t10d_sln-2-1",
-      "sf2-postamp-a-t10d_sln-2-2",
-      "sf2-postamp-a-t10d_sln-2-3"
-    ]
-  },
-  "SF2-POSTAMP-B-T101": {
-    "locations": [
-      "sf2-postamp-b-t101_sln-1-1",
-      "sf2-postamp-b-t101_sln-1-2",
-      "sf2-postamp-b-t101_sln-1-3",
-      "sf2-postamp-b-t101_sln-1-4",
-      "sf2-postamp-b-t101_sln-2-1",
-      "sf2-postamp-b-t101_sln-2-2",
-      "sf2-postamp-b-t101_sln-2-3",
-      "sf2-postamp-b-t101_sln-2-4",
-      "sf2-postamp-b-t101_sln-3-1",
-      "sf2-postamp-b-t101_sln-3-2",
-      "sf2-postamp-b-t101_sln-3-3",
-      "sf2-postamp-b-t101_sln-3-4"
-    ]
-  },
-  "SF2-POSTAMP-B-T102": {
-    "locations": [
-      "sf2-postamp-b-t102_sln-1-1",
-      "sf2-postamp-b-t102_sln-1-2",
-      "sf2-postamp-b-t102_sln-1-3",
-      "sf2-postamp-b-t102_sln-1-4",
-      "sf2-postamp-b-t102_sln-2-1",
-      "sf2-postamp-b-t102_sln-2-2",
-      "sf2-postamp-b-t102_sln-2-3",
-      "sf2-postamp-b-t102_sln-2-4",
-      "sf2-postamp-b-t102_sln-3-1",
-      "sf2-postamp-b-t102_sln-3-2",
-      "sf2-postamp-b-t102_sln-3-3",
-      "sf2-postamp-b-t102_sln-3-4"
-    ]
-  },
-  "SF2-POSTAMP-A-BIOSHAKES": {
-    "locations": [
-      "sf2-postamp-a-bioshake-1_nest",
-      "sf2-postamp-a-bioshake-2_nest",
-      "sf2-postamp-a-bioshake-3_nest"
-    ]
-  },
-  "SF2-POSTAMP-B-BIOSHAKES": {
-    "locations": [
-      "sf2-postamp-b-bioshake-1_nest",
-      "sf2-postamp-b-bioshake-2_nest",
-      "sf2-postamp-b-bioshake-3_nest"
-    ]
-  },
-  "SF2-POSTAMP-A-TRANSFER": {
-    "locations": [
-      "sf2-postamp-a-transfer-1-1",
-      "sf2-postamp-a-transfer-1-2",
-      "sf2-postamp-a-transfer-1-3",
-      "sf2-postamp-a-transfer-1-4",
-      "sf2-postamp-a-transfer-1-5",
-      "sf2-postamp-a-transfer-1-6",
-      "sf2-postamp-a-transfer-1-7",
-      "sf2-postamp-a-transfer-1-8",
-      "sf2-postamp-a-transfer-1-9",
-      "sf2-postamp-a-transfer-1-10"
-    ]
-  },
-  "SF2-POSTAMP-B-TRANSFER": {
-    "locations": [
-      "sf2-postamp-b-transfer-1-1",
-      "sf2-postamp-b-transfer-1-2",
-      "sf2-postamp-b-transfer-1-3",
-      "sf2-postamp-b-transfer-1-4",
-      "sf2-postamp-b-transfer-1-5",
-      "sf2-postamp-b-transfer-1-6",
-      "sf2-postamp-b-transfer-1-7",
-      "sf2-postamp-b-transfer-1-8",
-      "sf2-postamp-b-transfer-1-9",
-      "sf2-postamp-b-transfer-1-10"
-    ]
-  }
+    "SF2-POSTAMP-A-IO-1_SCAN": {
+        "locations": [
+            "sf2-postamp-a-io-1_scan-nest"
+        ]
+    },
+    "SF2-POSTAMP-B-IO-1_SCAN": {
+        "locations": [
+            "sf2-postamp-b-io-1_scan-nest"
+        ]
+    },
+    "SF2-POSTAMP-A-STERISTORE-1": {
+        "locations": [
+            "sf2-postamp-a-steristore-1"
+        ]
+    },
+    "SF2-POSTAMP-B-STERISTORE-1": {
+        "locations": [
+            "sf2-postamp-b-steristore-1"
+        ]
+    },
+    "SF2-POSTAMP-A-STERISTORE-1_NESTS": {
+        "locations": [
+            "sf2-postamp-a-steristore-1_nest-1",
+            "sf2-postamp-a-steristore-1_nest-2"
+        ]
+    },
+    "SF2-POSTAMP-B-STERISTORE-1_NESTS": {
+        "locations": [
+            "sf2-postamp-b-steristore-1_nest-1",
+            "sf2-postamp-b-steristore-1_nest-2"
+        ]
+    },
+    "SF2-POSTAMP-A-T5E": {
+        "locations": [
+            "sf2-postamp-a-t5e_sln-1-1",
+            "sf2-postamp-a-t5e_sln-1-2",
+            "sf2-postamp-a-t5e_sln-1-3",
+            "sf2-postamp-a-t5e_sln-2-1",
+            "sf2-postamp-a-t5e_sln-2-2",
+            "sf2-postamp-a-t5e_sln-2-3",
+            "sf2-postamp-a-t5e_sln-3-1",
+            "sf2-postamp-a-t5e_sln-3-2",
+            "sf2-postamp-a-t5e_sln-tip-1-1",
+            "sf2-postamp-a-t5e_sln-tip-1-2",
+            "sf2-postamp-a-t5e_sln-tip-1-3",
+            "sf2-postamp-a-t5e_sln-tip-2-1",
+            "sf2-postamp-a-t5e_sln-tip-2-2",
+            "sf2-postamp-a-t5e_sln-tip-2-3",
+            "sf2-postamp-a-t5e_sln-tip-3-1",
+            "sf2-postamp-a-t5e_sln-tip-3-2"
+        ]
+    },
+    "SF2-POSTAMP-A-T5C": {
+        "locations": [
+            "sf2-postamp-a-t5c_sln-1-1",
+            "sf2-postamp-a-t5c_sln-1-2",
+            "sf2-postamp-a-t5c_sln-1-3",
+            "sf2-postamp-a-t5c_sln-2-1",
+            "sf2-postamp-a-t5c_sln-2-2",
+            "sf2-postamp-a-t5c_sln-2-3",
+            "sf2-postamp-a-t5c_sln-3-1",
+            "sf2-postamp-a-t5c_sln-3-2",
+            "sf2-postamp-a-t5c_sln-tip-1-1",
+            "sf2-postamp-a-t5c_sln-tip-1-2",
+            "sf2-postamp-a-t5c_sln-tip-1-3",
+            "sf2-postamp-a-t5c_sln-tip-2-1",
+            "sf2-postamp-a-t5c_sln-tip-2-2",
+            "sf2-postamp-a-t5c_sln-tip-2-3",
+            "sf2-postamp-a-t5c_sln-tip-3-1",
+            "sf2-postamp-a-t5c_sln-tip-3-2"
+        ]
+    },
+    "SF2-POSTAMP-A-T10D": {
+        "locations": [
+            "sf2-postamp-a-t10d_sln-1-1",
+            "sf2-postamp-a-t10d_sln-1-2",
+            "sf2-postamp-a-t10d_sln-1-3",
+            "sf2-postamp-a-t10d_sln-1-4",
+            "sf2-postamp-a-t10d_sln-1-5",
+            "sf2-postamp-a-t10d_sln-2-1",
+            "sf2-postamp-a-t10d_sln-2-2",
+            "sf2-postamp-a-t10d_sln-2-3"
+        ]
+    },
+    "SF2-POSTAMP-B-T101": {
+        "locations": [
+            "sf2-postamp-b-t101_sln-1-1",
+            "sf2-postamp-b-t101_sln-1-2",
+            "sf2-postamp-b-t101_sln-1-3",
+            "sf2-postamp-b-t101_sln-1-4",
+            "sf2-postamp-b-t101_sln-2-1",
+            "sf2-postamp-b-t101_sln-2-2",
+            "sf2-postamp-b-t101_sln-2-3",
+            "sf2-postamp-b-t101_sln-2-4",
+            "sf2-postamp-b-t101_sln-3-1",
+            "sf2-postamp-b-t101_sln-3-2",
+            "sf2-postamp-b-t101_sln-3-3",
+            "sf2-postamp-b-t101_sln-3-4"
+        ]
+    },
+    "SF2-POSTAMP-B-T102": {
+        "locations": [
+            "sf2-postamp-b-t102_sln-1-1",
+            "sf2-postamp-b-t102_sln-1-2",
+            "sf2-postamp-b-t102_sln-1-3",
+            "sf2-postamp-b-t102_sln-1-4",
+            "sf2-postamp-b-t102_sln-2-1",
+            "sf2-postamp-b-t102_sln-2-2",
+            "sf2-postamp-b-t102_sln-2-3",
+            "sf2-postamp-b-t102_sln-2-4",
+            "sf2-postamp-b-t102_sln-3-1",
+            "sf2-postamp-b-t102_sln-3-2",
+            "sf2-postamp-b-t102_sln-3-3",
+            "sf2-postamp-b-t102_sln-3-4"
+        ]
+    },
+    "SF2-POSTAMP-A-BIOSHAKES": {
+        "locations": [
+            "sf2-postamp-a-bioshake-1_nest",
+            "sf2-postamp-a-bioshake-2_nest",
+            "sf2-postamp-a-bioshake-3_nest"
+        ]
+    },
+    "SF2-POSTAMP-B-BIOSHAKES": {
+        "locations": [
+            "sf2-postamp-b-bioshake-1_nest",
+            "sf2-postamp-b-bioshake-2_nest",
+            "sf2-postamp-b-bioshake-3_nest"
+        ]
+    },
+    "SF2-POSTAMP-A-TRANSFER": {
+        "locations": [
+            "sf2-postamp-a-transfer-tip-1-1",
+            "sf2-postamp-a-transfer-1-2",
+            "sf2-postamp-a-transfer-1-3",
+            "sf2-postamp-a-transfer-1-4",
+            "sf2-postamp-a-transfer-1-5",
+            "sf2-postamp-a-transfer-1-6",
+            "sf2-postamp-a-transfer-1-7",
+            "sf2-postamp-a-transfer-1-8",
+            "sf2-postamp-a-transfer-1-9",
+            "sf2-postamp-a-transfer-1-10"
+        ]
+    },
+    "SF2-POSTAMP-B-TRANSFER": {
+        "locations": [
+            "sf2-postamp-b-transfer-1-1",
+            "sf2-postamp-b-transfer-1-2",
+            "sf2-postamp-b-transfer-1-3",
+            "sf2-postamp-b-transfer-1-4",
+            "sf2-postamp-b-transfer-1-5",
+            "sf2-postamp-b-transfer-1-6",
+            "sf2-postamp-b-transfer-1-7",
+            "sf2-postamp-b-transfer-1-8",
+            "sf2-postamp-b-transfer-1-9",
+            "sf2-postamp-b-transfer-1-10"
+        ]
+    }
+
   ,
   "SF2-PREAMP-A-RTS": {
     "locations": [
